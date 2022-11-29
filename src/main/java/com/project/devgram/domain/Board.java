@@ -1,12 +1,20 @@
 package com.project.devgram.domain;
 
+import com.project.devgram.type.status.Status;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Board extends BaseEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,7 +28,16 @@ public class Board extends BaseEntity{
 	private String content;
 
 	@Column(length = 10)
-	private String status;
+	private Status status;
 
+	@Column(name="like_count")
 	private Integer likeCount;
+
+	@Builder
+	public Board(String title, String content){
+		this.title = title;
+		this.content = content;
+		this.status = Status.NORMAL;
+		this.likeCount = 0;
+	}
 }
