@@ -7,4 +7,6 @@ public interface ICategoryService {
 
 	List<CategoryDto> list(); // 카테고리 목록
 
+	boolean add(String name); // 카테고리 추가
+
 }
