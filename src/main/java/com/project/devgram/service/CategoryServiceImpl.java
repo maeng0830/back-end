@@ -22,4 +22,15 @@ public class CategoryServiceImpl implements ICategoryService{
 		List<Category> categories = categoryRepository.findAll(getSortBySortValueDesc());
 		return CategoryDto.of(categories);
 	}
+
+	@Override
+	public boolean add(String name) {
+
+		Category category = Category.builder()
+			.name(name)
+			.order(0)
+			.build();
+		categoryRepository.save(category);
+		return true;
+	}
 }

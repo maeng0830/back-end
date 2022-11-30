@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -21,6 +22,13 @@ public class CategoryContoller {
 		model.addAttribute("list", list); // view page
 
 		return "/api/categories";
+	}
+	@PostMapping("/api/categories")
+	public String add(CategoryDto parameter){
+
+		boolean result = categoryService.add(parameter.getName());
+
+		return "redirect:/api/categories"; // 추가 완료 시 목록으로 redirect
 	}
 
 }
