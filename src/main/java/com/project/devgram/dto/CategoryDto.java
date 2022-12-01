@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CategoryDto {
 
-	Long category_seq; // pk
+	Long category_Seq; // pk
 	String name; // 카테고리 name
-	Integer order; // 카테고리 순서
+	String color; // 카테고리 색상
 
 	public static List<CategoryDto> of(List<Category> categories){
 		if (categories != null){
@@ -31,9 +31,9 @@ public class CategoryDto {
 	}
 	public static CategoryDto of(Category category){
 		return CategoryDto.builder()
-			.category_seq(category.getCategory_seq())
+			.category_Seq(category.getCategory_Seq())
 			.name(category.getName())
-			.order(category.getOrder())
+			.color(category.getColor())
 			.build();
 	}
 

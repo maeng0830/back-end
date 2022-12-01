@@ -4,6 +4,7 @@ import com.project.devgram.dto.CategoryDto;
 import com.project.devgram.entity.Category;
 import com.project.devgram.repository.ICategoryRepository;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -13,24 +14,45 @@ import org.springframework.stereotype.Service;
 public class CategoryServiceImpl implements ICategoryService{
 
 	private final ICategoryRepository categoryRepository;
-	private Sort getSortBySortValueDesc() {
-		return Sort.by(Sort.Direction.DESC, "order"); // order기준 내림차순 정렬
-	}
 
 	@Override
 	public List<CategoryDto> list() {
-		List<Category> categories = categoryRepository.findAll(getSortBySortValueDesc());
+		List<Category> categories = categoryRepository.findAll();
 		return CategoryDto.of(categories);
+
 	}
 
 	@Override
-	public boolean add(String name) {
+	public boolean add(CategoryDto parameter) {
 
 		Category category = Category.builder()
-			.name(name)
-			.order(0)
+			.name(parameter.getName())
+			.color(parameter.getColor())
 			.build();
 		categoryRepository.save(category);
+		return true;
+	}
+
+	@Override
+	public boolean update(CategoryDto parameter) {
+
+		Optional<Category> optionalCategory = categoryRepository.findById(
+			parameter.getCategory_Seq());
+
+		if (optionalCategory.isPresent()){
+			Category category = optionalCategory.get();
+			category.setName(parameter.getName());
+			category.setColor(parameter.getColor());
+
+			categoryRepository.save(category);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean del(long id) {
+
+		categoryRepository.deleteById(id);
 		return true;
 	}
 }
