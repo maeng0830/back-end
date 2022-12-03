@@ -1,6 +1,6 @@
 package com.project.devgram.service;
 
-import com.project.devgram.domain.Board;
+import com.project.devgram.entity.Board;
 import com.project.devgram.dto.BoardDto;
 import com.project.devgram.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
