@@ -1,4 +1,4 @@
-package com.project.devgram.domain;
+package com.project.devgram.entity;
 
 import com.project.devgram.type.status.Status;
 import javax.persistence.Column;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Board extends BaseEntity{
+public class Board extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_seq", nullable = false)

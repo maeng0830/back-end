@@ -1,6 +1,6 @@
 package com.project.devgram.dto;
 
-import com.project.devgram.domain.Board;
+import com.project.devgram.entity.Board;
 import com.project.devgram.type.status.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.project.devgram.domain;
+package com.project.devgram.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.EntityListeners;
@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class BaseEntity {
+public class BaseTimeEntity {
 	@CreatedDate
 	private LocalDateTime createdAt;
 	private String createdBy;
