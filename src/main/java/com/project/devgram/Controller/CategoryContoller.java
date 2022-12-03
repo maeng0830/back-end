@@ -41,6 +41,4 @@ public class CategoryContoller {
 		return categoryService.del(parameter.getCategory_Seq());
 
 	}
-
-
 }

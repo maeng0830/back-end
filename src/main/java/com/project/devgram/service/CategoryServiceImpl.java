@@ -6,12 +6,11 @@ import com.project.devgram.repository.ICategoryRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class CategoryServiceImpl implements ICategoryService{
+public class CategoryServiceImpl implements ICategoryService {
 
 	private final ICategoryRepository categoryRepository;
 
@@ -39,7 +38,7 @@ public class CategoryServiceImpl implements ICategoryService{
 		Optional<Category> optionalCategory = categoryRepository.findById(
 			parameter.getCategory_Seq());
 
-		if (optionalCategory.isPresent()){
+		if (optionalCategory.isPresent()) {
 			Category category = optionalCategory.get();
 			category.setName(parameter.getName());
 			category.setColor(parameter.getColor());

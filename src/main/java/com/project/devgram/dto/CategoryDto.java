@@ -15,9 +15,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CategoryDto {
 
-	Long category_Seq; // pk
-	String name; // 카테고리 name
-	String color; // 카테고리 색상
+	Long category_Seq;
+	String name;
+	String color;
 
 	public static List<CategoryDto> of(List<Category> categories){
 		if (categories != null){
