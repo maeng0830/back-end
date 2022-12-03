@@ -22,11 +22,11 @@ class CategoryServiceImplTest {
 	void CategoryList(){
 
 		//given(변수 설정)
-		Category category = Category.builder().
+/*		Category category = Category.builder().
 		category_seq(1L)
 			.name("카테고리목록테스트용")
 			.order(1)
-			.build();
+			.build();*/
 
 		// when(실제 액션)
 
