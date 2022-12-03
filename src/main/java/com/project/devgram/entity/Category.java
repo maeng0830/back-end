@@ -19,8 +19,8 @@ public class Category {
 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
-	Long category_Seq; // pk
-	String name; // 카테고리 name
-	String color; // 카테고리 색상
+	Long category_Seq;
+	String name;
+	String color;
 
 }

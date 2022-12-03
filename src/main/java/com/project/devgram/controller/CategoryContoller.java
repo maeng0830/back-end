@@ -1,4 +1,4 @@
-package com.project.devgram.Controller;
+package com.project.devgram.controller;
 
 import com.project.devgram.dto.CategoryDto;
 import com.project.devgram.service.ICategoryService;
@@ -41,6 +41,4 @@ public class CategoryContoller {
 		return categoryService.del(parameter.getCategory_Seq());
 
 	}
-
-
 }
