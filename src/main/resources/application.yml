@@ -1,7 +1,11 @@
 spring:
   profiles:
-    ### dataSource info - mysql ###
-    include: secret
+    include: oauth
+  datasource:
+    url: jdbc:mysql://localhost:3306/****
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: "****"
+    password: "****"
 
   jpa:
     generate-ddl: true

@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: {client-id}
+            client-secret: {client-secret}
+
+jwt:
+  header: Authorization
+  secretKey: {아무거나길게입력 영어25자이상}
+## secret 키는 절대 github에 올리면 안됨. 대참사일어남.
+
