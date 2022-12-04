@@ -10,18 +10,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Board extends BaseTimeEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_seq", nullable = false)
 	private Long boardSeq;
 
-	@Column(length = 100, name= "title")
+	@Column(length = 100, name = "title")
 	private String title;
 
 	@Column(columnDefinition = "TEXT")
@@ -30,14 +32,40 @@ public class Board extends BaseTimeEntity {
 	@Column(length = 10)
 	private Status status;
 
-	@Column(name="like_count")
+	@Column(name = "like_count")
 	private Integer likeCount;
 
 	@Builder
-	public Board(String title, String content){
+	public Board(String title, String content) {
 		this.title = title;
 		this.content = content;
 		this.status = Status.NORMAL;
 		this.likeCount = 0;
 	}
+
+	public void deleteBoard() {
+		this.status = Status.DELETED;
+	}
+
+	public void updateTitle(String title) {
+		checkIsDeleted();
+		if (StringUtils.hasText(title)) {
+			this.title = title;
+		}
+	}
+
+	public void updateContent(String content) {
+		checkIsDeleted();
+		if (StringUtils.hasText(content)) {
+			this.content = content;
+		}
+	}
+
+	private void checkIsDeleted() {
+		//TODO : MERGE 이후 적절한 Exception 만들어 해당 내용 변경
+		if (this.status == Status.DELETED) {
+			throw new RuntimeException("이미 삭제된 보드 입니다. ");
+		}
+	}
+
 }
