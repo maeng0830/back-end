@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum Status implements BaseEnumCode<String> {
 	NORMAL("N","정상상태"),
+	ACCUSED("A", "신고상태"),
 	DELETED("D", "삭제상태");
 
 	@JsonValue

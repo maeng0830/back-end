@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardDto {
+	private Long boardSeq;
 	private String title;
 	private String content;
 	private Status status;
@@ -19,6 +20,7 @@ public class BoardDto {
 
 	public static BoardDto fromEntity(Board board){
 		return BoardDto.builder()
+			.boardSeq(board.getBoardSeq())
 			.title(board.getTitle())
 			.content(board.getContent())
 			.status(board.getStatus())
