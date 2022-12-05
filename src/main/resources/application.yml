@@ -1,3 +1,4 @@
 spring:
   profiles:
-    default: dev # 기본 => dev
+    default: dev
+    include: oauth
