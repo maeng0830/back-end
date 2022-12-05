@@ -2,14 +2,19 @@ package com.project.devgram.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.devgram.entity.User;
 import com.project.devgram.type.ROLE;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Data
+@Slf4j
 @RequiredArgsConstructor
 public class UserDto {
 
@@ -29,7 +34,7 @@ public class UserDto {
 
 
     @Builder
-    public UserDto(Long userSeq, String email,String password,String username,
+    public UserDto(Long userSeq, String email, String password, String username,
                    ROLE role, String providerId, String annual, String job, int followCount, int followerCount){
 
         this.username = username;
@@ -42,6 +47,28 @@ public class UserDto {
         this.providerId= providerId;
         this.password = password;
         this.followerCount= followerCount;
+    }
+
+    public static List<UserDto> of(List<User> userList) {
+
+        if(userList.size() > 0){
+            List<UserDto> followerList = new ArrayList<>();
+            for (User u: userList) {
+                UserDto dto = UserDto.builder()
+                        .userSeq(u.getUserSeq())
+                        .username(u.getUsername())
+                        .annual(u.getAnnual())
+                        .job(u.getJob())
+                        .followerCount(u.getFollowerCount())
+                        .followerCount(u.getFollowerCount())
+                        .build();
+                followerList.add(dto);
+            }
+            return followerList;
+        }
+        log.error("followerList error");
+        return null;
+
     }
 
 
