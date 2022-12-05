@@ -1,18 +1,4 @@
 spring:
   profiles:
+    default: dev
     include: oauth
-  datasource:
-    url: jdbc:mysql://localhost:3306/****
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: "****"
-    password: "****"
-
-  jpa:
-    generate-ddl: true
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
