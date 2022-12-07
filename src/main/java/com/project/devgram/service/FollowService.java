@@ -29,11 +29,10 @@ public class FollowService {
 
     @Transactional
     public UserResponse followAdd(FollowDto dto) {
-        log.info("dtos : {} ", dto);
 
         Optional<User> optionalUser = userRepository.findByUsername(dto.getUsername());
         Optional<User> optionalFollowing = userRepository.findByUsername(dto.getFollowingUsername());
-        List<Follow> followList = followRepository.findByFollowing_UserSeq(dto.getFollowingUserSeq());
+        List<Follow> followList = followRepository.findByFollowing_UserSeqOrderByFollowing(dto.getFollowingUserSeq());
 
 
         if (optionalUser.isPresent() && optionalFollowing.isPresent() && followList.size() == 0) {
@@ -59,8 +58,7 @@ public class FollowService {
             Follow followers = new Follow();
             followers.setFollower(follower);
             followers.setFollowing(following);
-
-
+            
             user.getFollowingList().add(followers);
 
             userRepository.save(user);
@@ -75,7 +73,7 @@ public class FollowService {
     //나를 팔로잉한 사람 리스트
     public List<UserDto> getFollowList(FollowDto dto) {
 
-        List<Follow> follower = followRepository.findByFollowing_UserSeq(dto.getUserSeq());
+        List<Follow> follower = followRepository.findByFollowing_UserSeqOrderByFollowing(dto.getUserSeq());
 
         return getUserDtoLists(follower, "follower");
     }
@@ -83,7 +81,7 @@ public class FollowService {
     //내가 팔로잉한 사람 리스트
     public List<UserDto> getFollowingList(FollowDto dto) {
 
-        List<Follow> following = followRepository.findByFollower_UserSeq(dto.getUserSeq());
+        List<Follow> following = followRepository.findByFollower_UserSeqOrderByFollower(dto.getUserSeq());
 
         return getUserDtoLists(following, "following");
     }
@@ -95,9 +93,8 @@ public class FollowService {
 
             for (int i = 0; i < followList.size(); i++) {
                 //나를 팔로우한 유저 userSeq
-                Long userSeq = null;
+                Long userSeq;
 
-                //이거 고민
                 if("follower".equals(check)) {
                     userSeq = followList.get(i).getFollower().getUserSeq();
                 }else {
@@ -119,5 +116,56 @@ public class FollowService {
         log.error("해당하는 list 크기가 0입니다.");
         return null;
     }
+
+
+
+    public void deleteFollowUser(Long userSeq){
+        log.info("following user delete");
+
+        Optional<Follow> optionalFollow = followRepository.findByFollower_UserSeq(userSeq);
+
+        if(optionalFollow.isPresent()){
+
+            Follow follow =optionalFollow.get();
+
+            followRepository.delete(follow);
+
+            followerCountMinus(follow);
+
+            log.info("following user delete success");
+        }
+
+    }
+
+    // 팔로우 취소시 상대 follower, 내 following 감소
+    private void followerCountMinus (Follow follow){
+
+        log.info("follower Minus start");
+
+        Long mySeq = follow.getFollower().getUserSeq();
+        Long yourSeq = follow.getFollowing().getUserSeq();
+
+        Optional<User> optionalUser = userRepository.findById(mySeq);
+        Optional<User> optionalFollowing = userRepository.findById(yourSeq);
+
+        if(optionalUser.isPresent() ) {
+
+            User user = optionalUser.get();
+            user.setFollowCount(user.getFollowCount() - 1);
+
+            userRepository.save(user);
+        }
+
+        if( optionalFollowing.isPresent()){
+
+            User followingUser = optionalFollowing.get();
+            followingUser.setFollowerCount(followingUser.getFollowerCount() - 1);
+
+            userRepository.save(followingUser);
+        }
+
+        log.info("count minus success");
+    }
+
 }
 

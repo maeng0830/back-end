@@ -26,6 +26,7 @@ public class FollowDto {
     @SuppressWarnings("unchecked")
     @JsonProperty("FollowDto") // form Name
     private void unpackNested(Map<String,Object> follow) {
+        this.userSeq=Long.parseLong(String.valueOf(follow.get("userSeq")));
         this.followingUserSeq =Long.parseLong(String.valueOf(follow.get("followingUserSeq")));
         this.followingUsername = String.valueOf(follow.get("followingUsername"));
 
