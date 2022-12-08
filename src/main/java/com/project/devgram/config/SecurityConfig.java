@@ -3,10 +3,10 @@ package com.project.devgram.config;
 
 import com.project.devgram.oauth2.handler.OAuth2AuthenticationFailureHandler;
 import com.project.devgram.oauth2.handler.OAuth2SuccessHandler;
+import com.project.devgram.oauth2.principal.PrincipalDetailsService;
 import com.project.devgram.oauth2.principal.PrincipalOauth2UserService;
 import com.project.devgram.oauth2.token.JwtAuthFilter;
 import com.project.devgram.oauth2.token.TokenService;
-import com.project.devgram.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,13 +23,13 @@ public class SecurityConfig {
 
 
    private final PrincipalOauth2UserService principalOauth2UserService;
-
+    private final PrincipalDetailsService principalDetailsService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     private final CorsConfig corsConfig;
     private final TokenService tokenService;
-    private final UserRepository userRepository;
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .userInfoEndpoint()
                 .userService(principalOauth2UserService);
 
-        http.addFilterBefore(new JwtAuthFilter(tokenService,userRepository), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthFilter(tokenService,principalDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

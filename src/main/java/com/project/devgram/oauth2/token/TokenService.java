@@ -1,8 +1,10 @@
 package com.project.devgram.oauth2.token;
 
 import com.project.devgram.oauth2.exception.TokenParsingException;
+import com.project.devgram.oauth2.redis.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.BasicJsonParser;
@@ -16,6 +18,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class TokenService {
 
@@ -23,7 +26,7 @@ public class TokenService {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-
+    private final RedisService redisService;
 
     @PostConstruct
     protected void init() {
@@ -31,35 +34,48 @@ public class TokenService {
     }
 
 
-    public Token generateToken(String uid, String role) {
+    public Token generateToken(String username, String role) {
         long tokenPeriod = 1000L * 60L * 10L;
         long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
 
-        Claims claims = Jwts.claims().setSubject(uid);
-        claims.put("role", role);
+
+        String[] tokenCheck = {"ATK", "RTK"};
+
+        String token = typoToken(username, role, tokenCheck[0], tokenPeriod);
+        String refreshToken = typoToken(username, role, tokenCheck[1], refreshPeriod);
+
+
+        redisService.createRefresh(username, refreshToken, tokenCheck[1], refreshPeriod);
+        return Token.builder()
+                .token(token)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+
+    private String typoToken(String username, String role, String type, long period) {
 
         Date now = new Date();
-        return new Token(
-                Jwts.builder()
-                        .setClaims(claims)
-                        .setIssuedAt(now)
-                        .setHeaderParam("jwt","jwt")
-                        .setExpiration(new Date(now.getTime() + tokenPeriod))
-                        .signWith(getSignKey(secretKey),SignatureAlgorithm.HS256)
-                        .compact(),
 
-                Jwts.builder()
-                        .setClaims(claims)
-                        .setHeaderParam("jwt","jwt")
-                        .setIssuedAt(now)
-                        .setExpiration(new Date(now.getTime() + refreshPeriod))
-                        .signWith(getSignKey(secretKey),SignatureAlgorithm.HS256)
-                        .compact());
+        Claims claims = Jwts.claims()
+                .setId(username)
+                .setSubject(type);
+        claims.put("role", role);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setHeaderParam("jwt", "jwt")
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + period))
+                .signWith(getSignKey(secretKey), SignatureAlgorithm.HS256)
+                .compact();
+
+
     }
 
 
 
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secretKey.getBytes())
@@ -74,7 +90,7 @@ public class TokenService {
             log.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
             log.error("JWT claims string is empty.");
-        } catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             log.error("JWT RefreshToken is empty");
         }
         return false;
@@ -89,12 +105,13 @@ public class TokenService {
         BasicJsonParser jsonParser = new BasicJsonParser();
         Map<String, Object> jsonArray = jsonParser.parseMap(payload);
 
-        if (!jsonArray.containsKey("sub")) {
+        if (!jsonArray.containsKey("jti") || !jsonArray.get("sub").toString().equals("ATK")) {
+
             throw new TokenParsingException("유효하지 않은 AccessToken 입니다");
         }
-        log.info("토큰 파싱 확인: "+jsonArray.get("sub").toString());
+        log.info("토큰 파싱 확인: " + jsonArray.get("jti").toString());
 
-        return jsonArray.get("sub").toString();
+        return jsonArray.get("jti").toString();
 
     }
 
@@ -103,7 +120,13 @@ public class TokenService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String getUid(String token) {
+    public String getUname(String token) {
+
+        return Jwts.parserBuilder().setSigningKey(secretKey.getBytes())
+                .build().parseClaimsJws(token).getBody().getId();
+    }
+
+    public String getTokenCheck(String token) {
 
         return Jwts.parserBuilder().setSigningKey(secretKey.getBytes())
                 .build().parseClaimsJws(token).getBody().getSubject();

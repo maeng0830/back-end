@@ -43,7 +43,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         String extraWord = sumStr.substring(0,6);
 
         String providerId =String.valueOf((Object) oAuth2User.getAttribute("id"));
-        String login =String.valueOf((Object) oAuth2User.getAttribute("login"));
         String email = oAuth2User.getAttribute("email");
         String username ="github"+providerId;
         String role="ROLE_USER";
@@ -58,8 +57,9 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                     .role(ROLE.valueOf(role))
                     .providerId(providerId)
                     .build();
-            userRepository.save(user);
             log.info("프로필 data:  "+ oAuth2User.getAttributes());
+            userRepository.save(user);
+
         }else {
             log.info("프로필 업데이트");
             user = userEntity.get();
