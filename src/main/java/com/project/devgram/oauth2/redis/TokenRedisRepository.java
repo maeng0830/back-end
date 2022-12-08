@@ -6,6 +6,7 @@ import java.util.Optional;
 
 public interface TokenRedisRepository extends CrudRepository<RedisUser,String> {
 
-    Optional<RedisUser> findByRedisUserId(String username);
+
+
 }
 

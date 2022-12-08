@@ -44,6 +44,7 @@ public class TokenService {
         String token = typoToken(username, role, tokenCheck[0], tokenPeriod);
         String refreshToken = typoToken(username, role, tokenCheck[1], refreshPeriod);
 
+
         redisService.createRefresh(username, refreshToken, tokenCheck[1], refreshPeriod);
         return Token.builder()
                 .token(token)

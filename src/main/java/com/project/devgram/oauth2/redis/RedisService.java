@@ -15,12 +15,12 @@ public class RedisService {
     private final TokenRedisRepository tokenRedisRepository;
 
 
-    public void createRefresh(String redisUserId,String token,String type,Long period){
+    public void createRefresh(String id,String token,String type,Long period){
         log.info("createRefresh");
-        log.info("username {} ",redisUserId);
+        log.info("username {} ",id);
 
         RedisUser user = RedisUser.builder()
-                .redisUserId(redisUserId)
+                .id(id)
                 .token(token)
                 .type(type)
                 .period(period)
@@ -30,10 +30,10 @@ public class RedisService {
         tokenRedisRepository.save(user);
     }
 
-    public void deleteRefresh(String redisUserId){
+    public void deleteRefresh(String id){
         log.info("delete RefreshToken");
 
-        Optional<RedisUser> optionalToken = Optional.ofNullable(tokenRedisRepository.findByRedisUserId(redisUserId)
+        Optional<RedisUser> optionalToken = Optional.ofNullable(tokenRedisRepository.findById(id)
                 .orElseThrow(() -> new NullPointerException("해당하는 토큰이 없습니다.")));
 
         if(optionalToken.isPresent()){
@@ -48,17 +48,17 @@ public class RedisService {
     }
 
 
-    public String getRefreshToken(String username) {
+    public String getRefreshToken(String id) {
 
 
-      Optional<RedisUser> optionalRedisUser = Optional.ofNullable(tokenRedisRepository.findByRedisUserId(username)
+      Optional<RedisUser> optionalRedisUser = Optional.ofNullable(tokenRedisRepository.findById(id)
               .orElseThrow(() -> new NullPointerException("이미 만료되었거나 삭제된 토큰입니다.")));
 
       if(optionalRedisUser.isPresent()) {
           RedisUser user = optionalRedisUser.get();
 
-          log.info("get success : {}",user.getRedisUserId());
-          return user.getRedisUserId();
+          log.info("get success : {}",user.getId());
+          return user.getId();
 
       }
       return String.valueOf(ResponseEnum.fail);

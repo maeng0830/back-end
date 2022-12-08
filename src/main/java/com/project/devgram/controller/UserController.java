@@ -110,7 +110,7 @@ public class UserController {
         log.info("delete follow");
             followService.deleteFollowUser(dto.getUserSeq());
         }
-        return ResponseEntity.ok("ok");
+        return ResponseEntity.ok("Delete ok");
     }
 
     //나를 팔로우한 사용자
