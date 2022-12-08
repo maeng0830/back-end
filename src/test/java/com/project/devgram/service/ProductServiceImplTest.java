@@ -63,12 +63,25 @@ class ProductServiceImplTest {
 	@DisplayName("product Status Update Test")
 	void updateStatus() {
 
-		boolean result = productService.updateStatus(1L,ProductCode.STATUS_APPROVE);
+		boolean result = productService.updateStatus(1L,ProductCode.STATUS_REJECT);
 		if (result == true ){
 			System.out.println("Update Test Success");
 		}else {
 			System.out.println("Update Test Fail");
 		}
 
+	}
+
+	@Test
+	@DisplayName("Product List - Approve")
+	void list() {
+
+		List<Product> products = repository.findAllByStatus(ProductCode.STATUS_APPROVE);
+
+		if (products.isEmpty()){
+			System.out.println("Test Success");
+		}else {
+			System.out.println("Test Fail");
+		}
 	}
 }

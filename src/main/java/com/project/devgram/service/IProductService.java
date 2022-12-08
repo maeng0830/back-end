@@ -3,6 +3,7 @@ package com.project.devgram.service;
 import com.project.devgram.dto.CategoryDto;
 import com.project.devgram.dto.ProductDto;
 import java.util.List;
+import java.util.Optional;
 
 public interface IProductService {
 
@@ -11,4 +12,6 @@ public interface IProductService {
 	List<ProductDto> confirm(); // admin 제품관리
 
 	boolean updateStatus(Long productSeq, String status); // 제품 status 변경
+
+	List<ProductDto> list(); // 전체 list(Approve)
 }

@@ -3,6 +3,7 @@ package com.project.devgram.service;
 import com.project.devgram.dto.ProductDto;
 import com.project.devgram.entity.Product;
 import com.project.devgram.repository.IProductRepository;
+import com.project.devgram.type.ProductCode;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -53,5 +54,11 @@ public class ProductServiceImpl implements IProductService {
 		productRepository.save(product);
 
 		return true;
+	}
+
+	@Override
+	public List<ProductDto> list() {
+		List<Product> products = productRepository.findAllByStatus(ProductCode.STATUS_APPROVE); // 승인된 건만 찾기
+		return ProductDto.of(products);
 	}
 }

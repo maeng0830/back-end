@@ -1,6 +1,7 @@
 package com.project.devgram.controller;
 
 import com.project.devgram.dto.ProductDto;
+import com.project.devgram.repository.IProductRepository;
 import com.project.devgram.service.IProductService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +32,8 @@ public class ProductController {
 
 		return productService.updateStatus(parameter.getProduct_Seq(), parameter.getStatus());
 	}
-
+	@GetMapping("/api/products/list") // 일반 - 제품목록 list
+	public List<ProductDto> list(String status){
+		return productService.list();
+	}
 }
