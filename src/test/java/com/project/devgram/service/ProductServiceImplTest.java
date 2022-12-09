@@ -1,5 +1,8 @@
 package com.project.devgram.service;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.project.devgram.dto.CategoryDto;
 import com.project.devgram.dto.ProductDto;
 import com.project.devgram.entity.Product;
 import com.project.devgram.repository.IProductRepository;
@@ -13,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-@Transactional
 class ProductServiceImplTest {
 
 	@Autowired
@@ -38,9 +40,9 @@ class ProductServiceImplTest {
 
 		boolean result = productService.write(parameter);
 		{
-			if (result == true){
+			if (result == true) {
 				System.out.println("write Test Success");
-			}else {
+			} else {
 				System.out.println("write Test Fail");
 			}
 		}
@@ -52,24 +54,11 @@ class ProductServiceImplTest {
 
 		List<Product> products = repository.findAll();
 
-		if (products.isEmpty()){
+		if (products.isEmpty()) {
 			System.out.println("List is Empty");
-		}else {
+		} else {
 			System.out.println("List is not Empty");
 		}
-	}
-
-	@Test
-	@DisplayName("product Status Update Test")
-	void updateStatus() {
-
-		boolean result = productService.updateStatus(1L,ProductCode.STATUS_REJECT);
-		if (result == true ){
-			System.out.println("Update Test Success");
-		}else {
-			System.out.println("Update Test Fail");
-		}
-
 	}
 
 	@Test
@@ -78,10 +67,23 @@ class ProductServiceImplTest {
 
 		List<Product> products = repository.findAllByStatus(ProductCode.STATUS_APPROVE);
 
-		if (products.isEmpty()){
+		if (products.isEmpty()) {
 			System.out.println("Test Success");
-		}else {
+		} else {
 			System.out.println("Test Fail");
+		}
+	}
+
+	@Test
+	@DisplayName("Product Delete Test")
+	void delete() {
+		ProductDto parameter = ProductDto.builder()
+			.product_Seq(3L).build();
+		boolean result = productService.delete(parameter.getProduct_Seq());
+		if (result == true) {
+			System.out.println("Delete Test Success");
+		} else {
+			System.out.println("Delete Test Fail");
 		}
 	}
 }

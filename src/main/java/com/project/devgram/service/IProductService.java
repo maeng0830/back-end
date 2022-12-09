@@ -11,12 +11,10 @@ public interface IProductService {
 
 	List<ProductDto> confirm(); // admin 제품관리
 
-	boolean updateStatus(Long productSeq, String status); // 제품 status 변경
-
 	List<ProductDto> list(); // 전체 list(Approve)
 
 	boolean update(ProductDto parameter); // product 업데이트
 
-
+	boolean delete(long id);
 
 }

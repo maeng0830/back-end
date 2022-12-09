@@ -26,12 +26,6 @@ public class ProductController {
 		return productService.confirm();
 	}
 
-	@PostMapping("/api/products/status") // admin - status 변경 post
-	public boolean status(@RequestBody ProductDto parameter) {
-
-		return productService.updateStatus(parameter.getProduct_Seq(), parameter.getStatus());
-	}
-
 	@GetMapping("/api/products/list") // 일반 - 제품목록 list
 	public List<ProductDto> list(String status) {
 		return productService.list();
@@ -41,6 +35,12 @@ public class ProductController {
 	public boolean update(@RequestBody ProductDto parameter){
 
 		return productService.update(parameter);
+
+	}
+	@PostMapping("/api/products/delete") // admin - 제품 삭제
+	public boolean delete(ProductDto parameter){
+
+		return productService.delete(parameter.getProduct_Seq());
 
 	}
 

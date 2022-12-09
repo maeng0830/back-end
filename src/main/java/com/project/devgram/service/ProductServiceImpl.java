@@ -40,30 +40,13 @@ public class ProductServiceImpl implements IProductService {
 	}
 
 	@Override
-	public boolean updateStatus(Long productSeq, String status) {
-
-		Optional<Product> optionalProduct = productRepository.findById(productSeq);
-
-		if (!optionalProduct.isPresent()){
-			return false;
-		}
-
-		Product product = optionalProduct.get();
-
-		product.setStatus(status);
-		productRepository.save(product);
-
-		return true;
-	}
-
-	@Override
 	public List<ProductDto> list() {
 		List<Product> products = productRepository.findAllByStatus(ProductCode.STATUS_APPROVE); // 승인된 건만 찾기
 		return ProductDto.of(products);
 	}
 
 	@Override
-	public boolean update(ProductDto parameter) {
+	public boolean update(ProductDto parameter) { // product update
 
 		Long product_Seq = parameter.getProduct_Seq();
 
@@ -77,9 +60,16 @@ public class ProductServiceImpl implements IProductService {
 		product.setPrice(parameter.getPrice());
 		product.setTitle(parameter.getTitle());
 		product.setContent(parameter.getContent());
-		//product.setStatus(parameter.getStatus()); -> 여기서 status를 같이 바꾸는게 맞는지...
+		product.setStatus(parameter.getStatus());
 		productRepository.save(product);
 
+		return true;
+	}
+
+	@Override
+	public boolean delete(long id) { // product delete
+
+		productRepository.deleteById(id);
 		return true;
 	}
 
