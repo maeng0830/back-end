@@ -41,7 +41,7 @@ public class ProductServiceImpl implements IProductService {
 
 	@Override
 	public List<ProductDto> list() {
-		List<Product> products = productRepository.findAllByStatus(ProductCode.STATUS_APPROVE); // 승인된 건만 찾기
+		List<Product> products = productRepository.findAllByStatus(Product.STATUS_APPROVE); // 승인된 건만 찾기
 		return ProductDto.of(products);
 	}
 
@@ -71,6 +71,13 @@ public class ProductServiceImpl implements IProductService {
 
 		productRepository.deleteById(id);
 		return true;
+	}
+
+	@Override
+	public List<ProductDto> popularList() { // product popular 4
+
+		List<Product> products = productRepository.findTop4ByStatusOrderByHitsDesc(Product.STATUS_APPROVE);
+		return ProductDto.of(products);
 	}
 
 

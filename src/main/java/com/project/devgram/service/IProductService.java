@@ -17,4 +17,6 @@ public interface IProductService {
 
 	boolean delete(long id);
 
+	List<ProductDto> popularList(); // list(Approve) 인기순
+
 }

@@ -38,10 +38,14 @@ public class ProductController {
 
 	}
 	@PostMapping("/api/products/delete") // admin - 제품 삭제
-	public boolean delete(ProductDto parameter){
+	public boolean delete(@RequestBody ProductDto parameter){
 
 		return productService.delete(parameter.getProduct_Seq());
 
+	}
+	@GetMapping("/api/products/popular") // 일반 - 인기제품 list
+	public List<ProductDto> popularList(){
+		return productService.popularList();
 	}
 
 }

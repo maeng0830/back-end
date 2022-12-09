@@ -65,7 +65,7 @@ class ProductServiceImplTest {
 	@DisplayName("Product List - Approve")
 	void list() {
 
-		List<Product> products = repository.findAllByStatus(ProductCode.STATUS_APPROVE);
+		List<Product> products = repository.findAllByStatus(Product.STATUS_APPROVE);
 
 		if (products.isEmpty()) {
 			System.out.println("Test Success");
@@ -78,12 +78,25 @@ class ProductServiceImplTest {
 	@DisplayName("Product Delete Test")
 	void delete() {
 		ProductDto parameter = ProductDto.builder()
-			.product_Seq(3L).build();
+			.product_Seq(1L).build();
 		boolean result = productService.delete(parameter.getProduct_Seq());
 		if (result == true) {
 			System.out.println("Delete Test Success");
 		} else {
 			System.out.println("Delete Test Fail");
+		}
+	}
+
+	@Test
+	@DisplayName("Product PopularList Test")
+	void popularList() {
+
+		List<Product> products = repository.findTop4ByStatusOrderByHitsDesc(Product.STATUS_APPROVE);
+
+		if (products.isEmpty()) {
+			System.out.println("List is Empty");
+		} else {
+			System.out.println("List is not Empty");
 		}
 	}
 }
