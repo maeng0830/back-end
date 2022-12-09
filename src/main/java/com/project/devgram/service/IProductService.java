@@ -14,4 +14,9 @@ public interface IProductService {
 	boolean updateStatus(Long productSeq, String status); // 제품 status 변경
 
 	List<ProductDto> list(); // 전체 list(Approve)
+
+	boolean update(ProductDto parameter); // product 업데이트
+
+
+
 }
