@@ -4,10 +4,8 @@ import com.project.devgram.dto.FollowDto;
 import com.project.devgram.dto.UserDto;
 import com.project.devgram.entity.Follow;
 import com.project.devgram.entity.User;
-import com.project.devgram.oauth2.response.UserResponse;
 import com.project.devgram.repository.FollowRepository;
 import com.project.devgram.repository.UserRepository;
-import com.project.devgram.type.ResponseEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +26,7 @@ public class FollowService {
 
 
     @Transactional
-    public UserResponse followAdd(FollowDto dto) {
+    public void followAdd(FollowDto dto) {
 
         Optional<User> optionalUser = userRepository.findByUsername(dto.getUsername());
         Optional<User> optionalFollowing = userRepository.findByUsername(dto.getFollowingUsername());
@@ -58,16 +56,14 @@ public class FollowService {
             Follow followers = new Follow();
             followers.setFollower(follower);
             followers.setFollowing(following);
-            
+
             user.getFollowingList().add(followers);
 
             userRepository.save(user);
 
 
-            return new UserResponse(String.valueOf(ResponseEnum.success), "following add success");
         }
 
-        return new UserResponse(String.valueOf(ResponseEnum.fail), "이미 등록된 유저입니다.");
     }
 
     //나를 팔로잉한 사람 리스트

@@ -106,7 +106,7 @@ public class TokenService {
 
         if (!jsonArray.containsKey("jti") || !jsonArray.get("sub").toString().equals("ATK")) {
 
-            throw new TokenParsingException("유효하지 않은 AccessToken 입니다");
+            throw new TokenParsingException("INVALIDATED_TOKEN_ERROR");
         }
         log.info("토큰 파싱 확인: " + jsonArray.get("jti").toString());
 

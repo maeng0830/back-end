@@ -1,6 +1,7 @@
 package com.project.devgram.controller;
 
 
+import com.project.devgram.exception.errorcode.TokenErrorCode;
 import com.project.devgram.oauth2.exception.ForbiddenException;
 import com.project.devgram.oauth2.redis.RedisService;
 import com.project.devgram.oauth2.token.Token;
@@ -40,7 +41,6 @@ public class TokenController {
             String username = tokenService.getUname(token);
             String rtkRedis = redisService.getRefreshToken(username);
 
-            log.info("redis :  {} ", rtkRedis);
             if (Objects.isNull(rtkRedis)) {
                 throw new ForbiddenException("인증정보가 만료되었습니다. ");
             }
@@ -54,7 +54,7 @@ public class TokenController {
             return "refresh success";
         }
 
-        throw new RuntimeException();
+        throw new RuntimeException(String.valueOf(TokenErrorCode.INVALIDATED_TOKEN));
     }
 
 
