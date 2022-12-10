@@ -1,5 +1,6 @@
 package com.project.devgram.service;
 
+import com.project.devgram.dto.CommentAccuseDto;
 import com.project.devgram.dto.CommentDto;
 import com.project.devgram.entity.Comment;
 import com.project.devgram.entity.CommentAccuse;
@@ -8,9 +9,12 @@ import com.project.devgram.exception.errorcode.CommentErrorCode;
 import com.project.devgram.repository.CommentAccuseRepository;
 import com.project.devgram.repository.CommentRepository;
 import com.project.devgram.type.CommentStatus;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -64,7 +68,11 @@ public class CommentService {
         ArrayList<CommentDto> commentDtoList = new ArrayList<>();
 
         for (Comment comment : commentList) {
-            commentDtoList.add(CommentDto.from(comment));
+            LocalDateTime latestAccusedAt = commentAccuseRepository.findTop1ByCommentSeq(
+                    comment.getCommentSeq(), sortByCreatedAtDesc()).orElseThrow(
+                    () -> new DevGramException(CommentErrorCode.NOT_EXISTENT_ACCUSE_HISTORY))
+                .getCreatedAt();
+            commentDtoList.add(CommentDto.from(comment, latestAccusedAt));
         }
 
         return commentDtoList;
@@ -89,8 +97,8 @@ public class CommentService {
     /*
      * 댓글 신고
      */
-    public CommentDto accuseComment(Long commentSeq) {
-        Comment comment = commentRepository.findByCommentSeq(commentSeq)
+    public CommentAccuseDto accuseComment(CommentAccuseDto commentAccuseDto) {
+        Comment comment = commentRepository.findByCommentSeq(commentAccuseDto.getCommentSeq())
             .orElseThrow(() -> new DevGramException(CommentErrorCode.NOT_EXISTENT_COMMENT));
 
         if (comment.getCommentStatus().equals(CommentStatus.POST)) {
@@ -99,12 +107,40 @@ public class CommentService {
         }
 
         CommentAccuse commentAccuse = CommentAccuse.builder()
-            .commentSeq(comment.getCommentSeq())
-            .content(comment.getContent())
+            .commentSeq(commentAccuseDto.getCommentSeq())
+            .accuseReason(commentAccuseDto.getAccuseReason())
             .build();
 
-        commentAccuseRepository.save(commentAccuse);
+        return CommentAccuseDto.from(commentAccuseRepository.save(commentAccuse));
+    }
+
+    /*
+     * 특정 신고 댓글 신고 내역 조회
+     */
+    public List<CommentAccuseDto> getAccusedCommentDetail(Long commentSeq) {
+        List<CommentAccuse> commentAccuseList = commentAccuseRepository.findByCommentSeq(
+                commentSeq, sortByCreatedAtDesc())
+            .orElseThrow(() -> new DevGramException(CommentErrorCode.NOT_EXISTENT_ACCUSE_HISTORY));
+
+        return CommentAccuseDto.fromList(commentAccuseList);
+    }
+
+    /*
+     * 댓글 상태 업데이트(관리자)
+     */
+    public CommentDto updateCommentStatus(Long commentSeq, CommentStatus commentStatus) {
+        Comment comment = commentRepository.findByCommentSeq(commentSeq)
+            .orElseThrow(() -> new DevGramException(CommentErrorCode.NOT_EXISTENT_COMMENT));
+
+        comment.setCommentStatus(commentStatus);
+
+        commentRepository.save(comment);
 
         return CommentDto.from(comment);
+    }
+
+    // 생성 날짜 내림차순 정렬
+    public Sort sortByCreatedAtDesc() {
+        return Sort.by(Direction.DESC, "createdAt");
     }
 }
