@@ -26,9 +26,20 @@ public class ProductController {
 		return productService.confirm();
 	}
 
-	@GetMapping("/api/products/list") // 일반 - 제품목록 list
+	@GetMapping("/api/products/list") // 일반 - 제품목록 list(상태 : APPROVE)
 	public List<ProductDto> list(String status) {
 		return productService.list();
+	}
+
+	@GetMapping("/api/products/popular") // 일반 - 인기제품 list(limit 4 / 상태 : APPROVE)
+	public List<ProductDto> popularList(){
+		return productService.popularList();
+	}
+
+	@GetMapping ("/api/products/{product_Seq}") // 상세 목록
+	public ProductDto productDetail(ProductDto parameter){
+
+		return productService.detail(parameter.getProduct_Seq());
 	}
 
 	@PostMapping("/api/products/update") // admin - 제품 수정
@@ -43,9 +54,4 @@ public class ProductController {
 		return productService.delete(parameter.getProduct_Seq());
 
 	}
-	@GetMapping("/api/products/popular") // 일반 - 인기제품 list
-	public List<ProductDto> popularList(){
-		return productService.popularList();
-	}
-
 }

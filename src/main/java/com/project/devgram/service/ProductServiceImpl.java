@@ -80,5 +80,14 @@ public class ProductServiceImpl implements IProductService {
 		return ProductDto.of(products);
 	}
 
+	@Override
+	public ProductDto detail(long id) {
+		Optional<Product> products = productRepository.findById(id);
+		if (products.isPresent()){
+			return ProductDto.of(products.get());
+		}
+		return null;
+	}
+
 
 }

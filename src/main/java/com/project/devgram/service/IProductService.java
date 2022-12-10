@@ -19,4 +19,5 @@ public interface IProductService {
 
 	List<ProductDto> popularList(); // list(Approve) 인기순
 
+	ProductDto detail(long id); // product Detail
 }

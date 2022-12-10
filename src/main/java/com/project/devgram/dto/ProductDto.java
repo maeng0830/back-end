@@ -48,10 +48,10 @@ public class ProductDto {
 			.hits(product.getHits())
 			.like_Count(product.getLike_Count())
 			.price(product.getPrice())
+			.status(product.getStatus())
 			.build();
 
 	}
-
 
 
 }
