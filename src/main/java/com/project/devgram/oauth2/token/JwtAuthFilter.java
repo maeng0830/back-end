@@ -36,18 +36,13 @@ public class JwtAuthFilter extends GenericFilterBean {
                 String username = tokenService.getUname(accessToken);
                 log.info("username : {}", username);
 
-                String tokenCheck = tokenService.getTokenCheck(accessToken);
+               if(isLoginUrlCheck(accessToken,requestURI)) {
 
-                if (tokenCheck.equals("RTK") && !requestURI.equals("/api/token/refresh")) {
-
-                    throw new JwtException("토큰을 확인하세요");
-                }
-
-                UserDetails userDetails = principalDetailsService.loadUserByUsername(username);
-                Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-                log.info("Authentication : {} ", auth);
-                SecurityContextHolder.getContext().setAuthentication(auth);
-
+                   UserDetails userDetails = principalDetailsService.loadUserByUsername(username);
+                   Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+                   log.info("Authentication : {} ", auth);
+                   SecurityContextHolder.getContext().setAuthentication(auth);
+               }
             } catch (JwtException e) {
                 request.setAttribute("exception", e.getMessage());
             }
@@ -55,6 +50,25 @@ public class JwtAuthFilter extends GenericFilterBean {
         }
 
         chain.doFilter(request, response);
+    }
+
+    private boolean isLoginUrlCheck(String accessToken,String requestURI){
+        String tokenCheck = tokenService.getTokenCheck(accessToken);
+        boolean blackList = tokenService.getListCheck(accessToken);
+
+
+        // 로그인 여부 판단
+        if(blackList){
+            throw new JwtException("토큰을 확인하세요");
+        }
+
+        //만료 된 토큰 판단
+        if (tokenCheck.equals("RTK") && !requestURI.equals("/api/token/refresh")) {
+
+            throw new JwtException("토큰을 확인하세요");
+        }
+
+        return true;
     }
 
 

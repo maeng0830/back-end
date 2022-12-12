@@ -1,7 +1,7 @@
 package com.project.devgram.oauth2.principal;
 
 
-import com.project.devgram.entity.User;
+import com.project.devgram.entity.Users;
 import com.project.devgram.repository.UserRepository;
 import com.project.devgram.type.ROLE;
 import lombok.RequiredArgsConstructor;
@@ -47,10 +47,10 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         String username ="github"+providerId;
         String role="ROLE_USER";
 
-        Optional<User> userEntity = userRepository.findByUsername(username);
-        User user;
+        Optional<Users> userEntity = userRepository.findByUsername(username);
+        Users users;
         if(userEntity.isEmpty()){
-            user = User.builder()
+            users = Users.builder()
                     .username(username)
                     .password(extraWord)
                     .email(email)
@@ -58,15 +58,15 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                     .providerId(providerId)
                     .build();
             log.info("프로필 data:  "+ oAuth2User.getAttributes());
-            userRepository.save(user);
+            userRepository.save(users);
 
         }else {
             log.info("프로필 업데이트");
-            user = userEntity.get();
-            userRepository.save(user);
+            users = userEntity.get();
+            userRepository.save(users);
 
         }
 
-        return new PrincipalDetails(user,oAuth2User.getAttributes());
+        return new PrincipalDetails(users,oAuth2User.getAttributes());
     }
 }

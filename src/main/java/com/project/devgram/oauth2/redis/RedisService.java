@@ -6,6 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+import static com.project.devgram.type.TokenType.ATK;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -15,7 +19,7 @@ public class RedisService {
 
 
     public void createRefresh(String id,String token,String type,Long period){
-        log.info("createRefresh");
+
         log.info("username {} ",id);
 
         RedisUser user = RedisUser.builder()
@@ -29,27 +33,44 @@ public class RedisService {
         tokenRedisRepository.save(user);
     }
 
-    public void deleteRefresh(String id){
+    public boolean deleteRefresh(String id){
         log.info("delete RefreshToken");
 
-        RedisUser targetToken =tokenRedisRepository.findById(id)
-                .orElseThrow(() -> new DevGramException(TokenErrorCode.NOT_EXIST_TOKEN));
-
-
-            tokenRedisRepository.delete(targetToken);
-            log.info("delete refreshToken");
+          tokenRedisRepository.deleteById(id);
+          return true;
         }
 
 
 
     public String getRefreshToken(String id) {
 
-
       RedisUser redis = tokenRedisRepository.findById(id)
               .orElseThrow(() -> new DevGramException(TokenErrorCode.NOT_EXIST_TOKEN));
-
 
           return redis.getId();
       }
 
+      //blackList 추가
+    public void blackListPush(String token) {
+
+        RedisUser user = RedisUser.builder()
+                .id(token)
+                .type(String.valueOf(ATK))
+                .period(300L)
+                .build();
+
+        tokenRedisRepository.save(user);
+    }
+
+    public boolean getBlackToken(String id) {
+
+        Optional<RedisUser> targetToken =tokenRedisRepository.findById(id);
+
+        if(targetToken.isEmpty()){
+            // 로그인 가능
+            return false;
+        }
+        // 로그인 실패
+        return true;
+    }
 }

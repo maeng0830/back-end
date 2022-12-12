@@ -1,7 +1,8 @@
 package com.project.devgram.service;
 
 import com.project.devgram.dto.UserDto;
-import com.project.devgram.entity.User;
+
+import com.project.devgram.entity.Users;
 import com.project.devgram.exception.DevGramException;
 import com.project.devgram.exception.errorcode.UserErrorCode;
 import com.project.devgram.repository.UserRepository;
@@ -20,7 +21,7 @@ public class UserService {
 
     public UserDto getUserDetails(String username){
 
-        User user = userRepository.findByUsername(username)
+        Users user = userRepository.findByUsername(username)
                 .orElseThrow(()-> new DevGramException(UserErrorCode.USER_NOT_EXIST,
                         "해당하는 유저가 없습니다."));
 
@@ -42,20 +43,17 @@ public class UserService {
     public void updateUserDetails(UserDto dto) {
         log.info("dtos {}",dto);
 
-        User user =userRepository.findByUsername(dto.getUsername())
+        Users user =userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(()-> new DevGramException(UserErrorCode.USER_NOT_EXIST));
 
         String encPassword = passUtil.encPassword(dto.getPassword());
-
 
             user.setPassword(encPassword);
             user.setJob(dto.getJob());
             user.setAnnual(dto.getAnnual());
             user.setUserSeq(dto.getUserSeq());
 
-
             userRepository.save(user);
-
     }
 
 }

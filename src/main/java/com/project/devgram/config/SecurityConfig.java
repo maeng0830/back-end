@@ -53,7 +53,7 @@ public class SecurityConfig {
                 .antMatchers("/api/admin/**").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()
                 .and()
-                .oauth2Login().loginPage("/api/loginForm").defaultSuccessUrl("/")
+                .oauth2Login().defaultSuccessUrl("/") // loginForm 삭제 1212
                 .successHandler(oAuth2SuccessHandler)
                 .failureHandler(oAuth2AuthenticationFailureHandler)
                 .userInfoEndpoint()

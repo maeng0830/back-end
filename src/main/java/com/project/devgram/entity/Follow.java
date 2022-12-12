@@ -20,19 +20,19 @@ public class Follow {
     private Long followSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User follower;
+    private Users follower;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User following;
+    private Users following;
 
-    public void setFollower(User follower){
+    public void setFollower(Users follower){
         this.follower=follower;
         follower.getFollowingList().add(this);
 
 
     }
 
-    public void setFollowing(User following){
+    public void setFollowing(Users following){
         this.following=following;
         following.getFollowingList().add(this);
 

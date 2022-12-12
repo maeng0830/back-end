@@ -1,5 +1,6 @@
 package com.project.devgram.controller;
 
+import com.project.devgram.dto.CommonDto;
 import com.project.devgram.dto.FollowDto;
 import com.project.devgram.dto.UserDto;
 import com.project.devgram.oauth2.exception.TokenParsingException;
@@ -7,17 +8,23 @@ import com.project.devgram.oauth2.redis.RedisService;
 import com.project.devgram.oauth2.token.TokenService;
 import com.project.devgram.service.FollowService;
 import com.project.devgram.service.UserService;
+import com.project.devgram.type.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
@@ -32,20 +39,25 @@ public class UserController {
 
 
     @PostMapping("/api/logout")
-    public String logout(HttpServletRequest request) throws TokenParsingException {
+    public void logout(HttpServletRequest request) throws TokenParsingException {
 
         String token = request.getHeader("Authentication");
         String username = usernameMaker(token);
 
+        boolean redis = redisService.deleteRefresh(username);
 
-        redisService.deleteRefresh(username);
-        log.info("logout");
-        return "redirect:/";
+        // 추가 accessToken 만료 ;
+        if (redis) {
+
+            redisService.blackListPush(token);
+
+            log.info("add black list ");
+        }
+
     }
 
 
     @GetMapping("/api/user")
-    @ResponseBody
     public UserDto getUserDetails(HttpServletRequest request) throws TokenParsingException {
 
 
@@ -58,7 +70,6 @@ public class UserController {
 
 
     @PutMapping("/api/user")
-    @ResponseBody
     public void updateUserDetails(HttpServletRequest request, @RequestBody UserDto dto) throws TokenParsingException {
 
 
@@ -72,23 +83,34 @@ public class UserController {
     }
 
     @PostMapping("/api/user/follow")
-    @ResponseBody
-    public void followingUsers(HttpServletRequest request, @RequestBody FollowDto dto)
+    public CommonDto<?> followingUsers(HttpServletRequest request, @Valid @RequestBody FollowDto dto, BindingResult bindingResult)
             throws TokenParsingException {
+        log.info("{} ", dto.getFollowingUserSeq());
+        if(bindingResult.hasErrors()){
+            Map<String,String> errorMap = new HashMap<>();
+            for (FieldError error: bindingResult.getFieldErrors()){
+                errorMap.put(error.getField(),error.getDefaultMessage());
+            }
+            return new CommonDto<>(HttpStatus.BAD_REQUEST.value(),errorMap);
+        }
 
         String token = request.getHeader("Authentication");
+
         dto.setUsername(usernameMaker(token));
 
-         followService.followAdd(dto);
-         log.info("following user add success");
+        followService.followAdd(dto);
+
+        return new CommonDto<>(HttpStatus.OK.value(), Response.SUCCESS);
+
+
     }
+
     @DeleteMapping("/api/user/follow")
-    @ResponseBody
     public ResponseEntity<String> followingUserDelete(HttpServletRequest request, @RequestBody FollowDto dto) {
 
         String token = request.getHeader("Authentication");
 
-        if(!token.isEmpty()) {
+        if (!token.isEmpty()) {
             log.info("delete follow");
             followService.deleteFollowUser(dto.getUserSeq());
         }
@@ -97,7 +119,6 @@ public class UserController {
 
     //나를 팔로우한 사용자
     @GetMapping("/api/user/follow/{UserSeq}")
-    @ResponseBody
     public ResponseEntity<List<UserDto>> followerUserList(HttpServletRequest request, FollowDto dto
             , @PathVariable("UserSeq") Long UserSeq) throws TokenParsingException {
 
@@ -114,7 +135,6 @@ public class UserController {
 
     //내가 팔로우한 사용자
     @GetMapping("/api/user/following/{UserSeq}")
-    @ResponseBody
     public ResponseEntity<List<UserDto>> followingUserList(HttpServletRequest request, FollowDto dto
             , @PathVariable("UserSeq") Long UserSeq) throws TokenParsingException {
 
@@ -132,9 +152,8 @@ public class UserController {
 
     //oauth2 로그인 후 처리 토큰 발급 api
     @GetMapping(value = "/api/oauth/redirect")
-    @ResponseBody
     public ResponseEntity<String> getToken(HttpServletResponse response,
-              @RequestParam(value = "token", required = false) String token
+                                           @RequestParam(value = "token", required = false) String token
             , @RequestParam(value = "refresh", required = false) String refresh) {
 
 

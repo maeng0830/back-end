@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
@@ -28,6 +29,9 @@ public class TokenService {
 
     private final RedisService redisService;
 
+    private final long accessTokenValidTime = Duration.ofMinutes(30).toMillis();
+    private final long refreshTokenValidTime = Duration.ofDays(1).toSeconds();
+
     @PostConstruct // 빈등록 후 초기화를 시켜주는 어노테이션
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
@@ -35,16 +39,15 @@ public class TokenService {
 
 
     public Token generateToken(String username, String role) {
-        long tokenPeriod = 1000L * 60L * 10L;
-        long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
+
 
 
         String[] tokenCheck = {"ATK", "RTK"};
 
-        String token = typoToken(username, role, tokenCheck[0], tokenPeriod);
-        String refreshToken = typoToken(username, role, tokenCheck[1], refreshPeriod);
+        String token = typoToken(username, role, tokenCheck[0], accessTokenValidTime);
+        String refreshToken = typoToken(username, role, tokenCheck[1], refreshTokenValidTime);
 
-        redisService.createRefresh(username, refreshToken, tokenCheck[1], refreshPeriod);
+        redisService.createRefresh(username, refreshToken, tokenCheck[1], refreshTokenValidTime);
         return Token.builder()
                 .token(token)
                 .refreshToken(refreshToken)
@@ -54,7 +57,6 @@ public class TokenService {
 
     private String typoToken(String username, String role, String type, long period) {
 
-        Date now = new Date();
 
         Claims claims = Jwts.claims()
                 .setId(username)
@@ -64,8 +66,8 @@ public class TokenService {
         return Jwts.builder()
                 .setClaims(claims)
                 .setHeaderParam("jwt", "jwt")
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + period))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + period))
                 .signWith(getSignKey(secretKey), SignatureAlgorithm.HS256)
                 .compact();
 
@@ -132,5 +134,8 @@ public class TokenService {
     }
 
 
+    public boolean getListCheck(String accessToken) {
 
+        return redisService.getBlackToken(accessToken);
+    }
 }

@@ -1,6 +1,7 @@
 package com.project.devgram.service;
 
-import com.project.devgram.entity.User;
+
+import com.project.devgram.entity.Users;
 import com.project.devgram.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,14 +40,14 @@ class UserServiceTest {
         Long [] userId = {1L,22L,33L};
 
         doReturn(Arrays.asList(
-                User.builder().userSeq(userId[0]).build(),
-                User.builder().userSeq(userId[1]).build(),
-                User.builder().userSeq(userId[2]).build()
+                Users.builder().userSeq(userId[0]).build(),
+                Users.builder().userSeq(userId[1]).build(),
+                Users.builder().userSeq(userId[2]).build()
 
         )).when(userRepository).findAllById(Arrays.asList(userId));
     //when
 
-        final List<User> result =getMembershipList(List.of(userId));
+        final List<Users> result =getMembershipList(List.of(userId));
 
     //then
 
@@ -59,23 +60,23 @@ class UserServiceTest {
     @Test
     void updateUserList(){
     //given
-        User user = User.builder()
+        Users user = Users.builder()
                 .userSeq(12L)
                 .username("testUser")
                 .build();
         userRepository.save(user);
-        User user2= User.builder()
+        Users user2= Users.builder()
                 .userSeq(12L)
                 .username("users")
                 .build();
         userRepository.save(user2);
         given(userRepository.findById(anyLong())).willReturn(Optional.of(user2));
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<Users> captor = ArgumentCaptor.forClass(Users.class);
     //when
 
-        Optional<User> userOptional = userRepository.findById(12L);
-        User user3 = userOptional.get();
+        Optional<Users> userOptional = userRepository.findById(12L);
+        Users user3 = userOptional.get();
     //then
         verify(userRepository,times(2)).save(captor.capture());
         assertNotNull(userOptional);
@@ -84,7 +85,7 @@ class UserServiceTest {
 
     }
 
-    public List<User> getMembershipList(final List<Long> userId) {
+    public List<Users> getMembershipList(final List<Long> userId) {
         return userRepository.findAllById(userId);
     }
 
