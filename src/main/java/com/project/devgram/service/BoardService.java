@@ -46,7 +46,7 @@ public class BoardService {
 		board.deleteBoard();
 	}
 
-	private Board getBoard(Long boardSeq) {
+	public Board getBoard(Long boardSeq) {
 		//TODO: exception 기준 대로 만들어 throw 하는 exception 변경 예정.
 		return boardRepository.findById(boardSeq).orElseThrow(() ->
 			new NoSuchElementException("boardSeq에 해당하는 board가 없습니다."));
