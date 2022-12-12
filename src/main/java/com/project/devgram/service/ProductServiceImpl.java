@@ -3,10 +3,14 @@ package com.project.devgram.service;
 import com.project.devgram.dto.ProductDto;
 import com.project.devgram.entity.Product;
 import com.project.devgram.repository.IProductRepository;
-import com.project.devgram.type.ProductCode;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -34,19 +38,20 @@ public class ProductServiceImpl implements IProductService {
 	}
 
 	@Override
-	public List<ProductDto> confirm() {
-		List<Product> products = productRepository.findAll();
+	public Page<Product> confirm(Pageable pageable) {
+		int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+		pageable = PageRequest.of(page, 5, Sort.by(Direction.DESC, "productSeq"));
+		return productRepository.findAll(pageable);
+	}
+
+	@Override
+	public List<ProductDto> list(Pageable pageable) {
+		List<Product> products = productRepository.findAllByStatus(Product.STATUS_APPROVE, pageable);
 		return ProductDto.of(products);
 	}
 
 	@Override
-	public List<ProductDto> list() {
-		List<Product> products = productRepository.findAllByStatus(Product.STATUS_APPROVE); // 승인된 건만 찾기
-		return ProductDto.of(products);
-	}
-
-	@Override
-	public boolean update(ProductDto parameter) { // product update
+	public boolean update(ProductDto parameter) {
 
 		Long product_Seq = parameter.getProduct_Seq();
 
@@ -67,14 +72,14 @@ public class ProductServiceImpl implements IProductService {
 	}
 
 	@Override
-	public boolean delete(long id) { // product delete
+	public boolean delete(long id) {
 
 		productRepository.deleteById(id);
 		return true;
 	}
 
 	@Override
-	public List<ProductDto> popularList() { // product popular 4
+	public List<ProductDto> popularList() {
 
 		List<Product> products = productRepository.findTop4ByStatusOrderByHitsDesc(Product.STATUS_APPROVE);
 		return ProductDto.of(products);
@@ -82,11 +87,12 @@ public class ProductServiceImpl implements IProductService {
 
 	@Override
 	public ProductDto detail(long id) {
-		Optional<Product> products = productRepository.findById(id);
-		if (products.isPresent()){
-			return ProductDto.of(products.get());
-		}
-		return null;
+		Product product = productRepository.findById(id).get();
+
+		product.setHits(product.getHits() + 1);
+		productRepository.save(product);
+
+		return ProductDto.of(product);
 	}
 
 

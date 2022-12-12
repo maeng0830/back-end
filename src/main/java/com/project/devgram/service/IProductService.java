@@ -1,23 +1,26 @@
 package com.project.devgram.service;
 
-import com.project.devgram.dto.CategoryDto;
 import com.project.devgram.dto.ProductDto;
+import com.project.devgram.entity.Product;
 import java.util.List;
-import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface IProductService {
 
-	boolean write(ProductDto parameter); // 글 작성
+	boolean write(ProductDto parameter); // 글 작성(일반)
 
-	List<ProductDto> confirm(); // admin 제품관리
+	Page<Product> confirm(Pageable pageable); // admin 제품관리
 
-	List<ProductDto> list(); // 전체 list(Approve)
+	List<ProductDto> list(Pageable pageable); // 전체 list(Approve)
 
 	boolean update(ProductDto parameter); // product 업데이트
 
-	boolean delete(long id);
+	boolean delete(long id); // product 삭제
 
-	List<ProductDto> popularList(); // list(Approve) 인기순
+	List<ProductDto> popularList(); // list(Approve) 인기순 4
 
-	ProductDto detail(long id); // product Detail
+	ProductDto detail(long id); // product Detail + 조회수증가
+
+
 }

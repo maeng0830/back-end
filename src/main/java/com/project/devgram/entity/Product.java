@@ -10,10 +10,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,7 +25,7 @@ public class Product implements ProductCode {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long product_Seq;
+	Long productSeq;
 
 	String title;
 	String content;
@@ -32,5 +35,6 @@ public class Product implements ProductCode {
 	double price;
 	String status;
 	long category_Seq; // 카테고리 id
+
 
 }
