@@ -1,7 +1,7 @@
 package com.project.devgram.oauth2.principal;
 
 
-import com.project.devgram.entity.User;
+import com.project.devgram.entity.Users;
 import com.project.devgram.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +23,10 @@ public class PrincipalDetailsService implements UserDetailsService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-			Optional<User> optionalUser = userRepository.findByUsername(username);
+			Optional<Users> optionalUser = userRepository.findByUsername(username);
 		if(optionalUser.isPresent()) {
-			User user = optionalUser.get();
-			return new PrincipalDetails(user);
+			Users users = optionalUser.get();
+			return new PrincipalDetails(users);
 		}
 		log.error("loadUserByUsername : x");
 		return null;

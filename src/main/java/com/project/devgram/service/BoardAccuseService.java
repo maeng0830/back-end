@@ -3,7 +3,7 @@ package com.project.devgram.service;
 import com.project.devgram.dto.BoardAccuseDto;
 import com.project.devgram.dto.SearchBoardAccuse.Request;
 import com.project.devgram.entity.Board;
-import com.project.devgram.entity.User;
+import com.project.devgram.entity.Users;
 import com.project.devgram.repository.BoardAccuseRepository;
 import com.project.devgram.repository.UserRepository;
 import java.util.List;
@@ -31,7 +31,7 @@ public class BoardAccuseService {
 
 		Board board = boardService.getBoard(boardSeq);
 
-		User user = userRepository.findById(userSeq).orElseThrow(() -> new UsernameNotFoundException(""));
+		Users user = userRepository.findById(userSeq).orElseThrow(() -> new UsernameNotFoundException(""));
 
 		return BoardAccuseDto.from(boardAccuseRepository.save(BoardAccuseDto.toEntity(board, user, content)));
 	}

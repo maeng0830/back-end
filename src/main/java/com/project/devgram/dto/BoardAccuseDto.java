@@ -2,7 +2,7 @@ package com.project.devgram.dto;
 
 import com.project.devgram.entity.Board;
 import com.project.devgram.entity.BoardAccuse;
-import com.project.devgram.entity.User;
+import com.project.devgram.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class BoardAccuseDto {
 	private Long boardSeq;
 	private Long userSeq;
 
-	public static BoardAccuse toEntity(Board board, User user, String content){
+	public static BoardAccuse toEntity(Board board, Users user, String content){
 		return BoardAccuse.builder()
 			.board(board)
 			.user(user)

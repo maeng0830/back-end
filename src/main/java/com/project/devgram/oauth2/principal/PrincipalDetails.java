@@ -1,6 +1,6 @@
 package com.project.devgram.oauth2.principal;
 
-import com.project.devgram.entity.User;
+import com.project.devgram.entity.Users;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,8 +18,8 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private Map<String,Object> attributes;
 
-    public PrincipalDetails(User user) {
-        this.user = user;
+    public PrincipalDetails(Users user) {
+        this.users = user;
     }
 
     @Override
@@ -32,11 +32,11 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         return null;
     }
 
-    private User user;
+    private Users users;
 
-    public PrincipalDetails(User user,Map<String,Object>attributes){
+    public PrincipalDetails(Users users,Map<String,Object>attributes){
 
-        this.user = user;
+        this.users = users;
         this.attributes = attributes;
 
     }
@@ -47,19 +47,19 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
 
         Collection<GrantedAuthority> collect = new ArrayList<GrantedAuthority>();
-        collect.add(()->{ return String.valueOf(user.getRole());});
+        collect.add(()->{ return String.valueOf(users.getRole());});
         return collect;
 
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return users.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return users.getUsername();
     }
 
     @Override
