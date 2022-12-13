@@ -41,7 +41,7 @@ public class ProductDto {
 	}
 	public static ProductDto of(Product product){
 		return ProductDto.builder()
-			.product_Seq(product.getProduct_Seq())
+			.product_Seq(product.getProductSeq())
 			.category_Seq(product.getCategory_Seq())
 			.title(product.getTitle())
 			.content(product.getContent())
