@@ -2,7 +2,7 @@ package com.project.devgram.dto;
 
 import com.project.devgram.entity.Board;
 import com.project.devgram.entity.BoardLike;
-import com.project.devgram.entity.User;
+import com.project.devgram.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class BoardLikeDto {
 	private Long boardSeq;
 	private String boardTitle;
 
-	public static BoardLike toEntity(Board board, User user) {
+	public static BoardLike toEntity(Board board, Users user) {
 		return BoardLike.builder()
 			.board(board)
 			.user(user)

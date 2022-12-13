@@ -4,7 +4,7 @@ import com.project.devgram.dto.BoardLikeDto;
 import com.project.devgram.dto.SearchBoardLike.Request;
 import com.project.devgram.entity.Board;
 import com.project.devgram.entity.BoardLike;
-import com.project.devgram.entity.User;
+import com.project.devgram.entity.Users;
 import com.project.devgram.exception.DevGramException;
 import com.project.devgram.exception.errorcode.BoardLikeErrorCode;
 import com.project.devgram.repository.BoardLikeRepository;
@@ -35,7 +35,7 @@ public class BoardLikeService {
 
 		Board board = boardService.getBoard(boardSeq);
 
-		User user = userRepository.findById(userSeq).orElseThrow(() -> new UsernameNotFoundException("asdasdd"));
+		Users user = userRepository.findById(userSeq).orElseThrow(() -> new UsernameNotFoundException("asdasdd"));
 
 		board.increaseLikeCount();
 

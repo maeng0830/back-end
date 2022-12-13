@@ -41,5 +41,5 @@ public class BoardLike extends BaseTimeEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "user_seq")
-	private User user;
+	private Users user;
 }
