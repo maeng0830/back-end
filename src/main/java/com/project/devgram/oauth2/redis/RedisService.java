@@ -1,11 +1,15 @@
 package com.project.devgram.oauth2.redis;
 
-import com.project.devgram.type.ResponseEnum;
+import com.project.devgram.exception.DevGramException;
+import com.project.devgram.exception.errorcode.TokenErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
+
+import static com.project.devgram.type.TokenType.ATK;
 
 @Service
 @Slf4j
@@ -16,7 +20,7 @@ public class RedisService {
 
 
     public void createRefresh(String id,String token,String type,Long period){
-        log.info("createRefresh");
+
         log.info("username {} ",id);
 
         RedisUser user = RedisUser.builder()
@@ -29,38 +33,53 @@ public class RedisService {
 
         tokenRedisRepository.save(user);
     }
-
-    public void deleteRefresh(String id){
+    @Transactional
+    public boolean deleteRefresh(String id){
         log.info("delete RefreshToken");
+        Optional<RedisUser> targetToken = tokenRedisRepository.findById(id);
 
-        Optional<RedisUser> optionalToken = Optional.ofNullable(tokenRedisRepository.findById(id)
-                .orElseThrow(() -> new NullPointerException("해당하는 토큰이 없습니다.")));
+        if(targetToken.isPresent()){
 
-        if(optionalToken.isPresent()){
+            RedisUser target = targetToken.get();
 
-            RedisUser user = optionalToken.get();
-
-            tokenRedisRepository.delete(user);
-            log.info("delete refreshToken");
-        }else {
-            log.error("refreshToken fail to find");
+            tokenRedisRepository.delete(target);
+            return true;
         }
-    }
+          return false;
+        }
+
 
 
     public String getRefreshToken(String id) {
 
+      RedisUser redis = tokenRedisRepository.findById(id)
+              .orElseThrow(() -> new DevGramException(TokenErrorCode.NOT_EXIST_TOKEN));
 
-      Optional<RedisUser> optionalRedisUser = Optional.ofNullable(tokenRedisRepository.findById(id)
-              .orElseThrow(() -> new NullPointerException("이미 만료되었거나 삭제된 토큰입니다.")));
-
-      if(optionalRedisUser.isPresent()) {
-          RedisUser user = optionalRedisUser.get();
-
-          log.info("get success : {}",user.getId());
-          return user.getId();
-
+          return redis.getId();
       }
-      return String.valueOf(ResponseEnum.fail);
+
+      //blackList 추가
+    @Transactional
+    public void blackListPush(String token) {
+
+        RedisUser user = RedisUser.builder()
+                .id(token)
+                .type(String.valueOf(ATK))
+                .period(300L)
+                .build();
+
+        tokenRedisRepository.save(user);
+    }
+
+    public boolean getBlackToken(String id) {
+
+        Optional<RedisUser> targetToken =tokenRedisRepository.findById(id);
+
+        if(targetToken.isEmpty()){
+            // 로그인 가능
+            return false;
+        }
+        // 로그인 실패
+        return true;
     }
 }

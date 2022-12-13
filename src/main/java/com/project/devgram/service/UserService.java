@@ -1,16 +1,15 @@
 package com.project.devgram.service;
 
 import com.project.devgram.dto.UserDto;
-import com.project.devgram.entity.User;
-import com.project.devgram.oauth2.response.UserResponse;
+
+import com.project.devgram.entity.Users;
+import com.project.devgram.exception.DevGramException;
+import com.project.devgram.exception.errorcode.UserErrorCode;
 import com.project.devgram.repository.UserRepository;
-import com.project.devgram.type.ResponseEnum;
 import com.project.devgram.util.passUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -22,11 +21,9 @@ public class UserService {
 
     public UserDto getUserDetails(String username){
 
-        Optional<User> userOptional = userRepository.findByUsername(username);
-
-        if(userOptional.isPresent()){
-
-            User user = userOptional.get();
+        Users user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new DevGramException(UserErrorCode.USER_NOT_EXIST,
+                        "해당하는 유저가 없습니다."));
 
             return UserDto.builder()
                     .userSeq(user.getUserSeq())
@@ -41,34 +38,22 @@ public class UserService {
                     .providerId(user.getProviderId())
                     .build();
         }
-        log.error("getUserDetails fail");
-        return null;
-
-    }
 
 
-    public UserResponse updateUserDetails(UserDto dto) {
+    public void updateUserDetails(UserDto dto) {
         log.info("dtos {}",dto);
 
-        Optional<User> userOptional =userRepository.findByUsername(dto.getUsername());
+        Users user =userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(()-> new DevGramException(UserErrorCode.USER_NOT_EXIST));
 
         String encPassword = passUtil.encPassword(dto.getPassword());
 
-        if (userOptional.isPresent()) {
-
-            User user = userOptional.get();
             user.setPassword(encPassword);
             user.setJob(dto.getJob());
             user.setAnnual(dto.getAnnual());
             user.setUserSeq(dto.getUserSeq());
 
-
             userRepository.save(user);
-            return new UserResponse(String.valueOf(ResponseEnum.success),"update complete");
-        }
-
-        log.error("fail");
-        return new UserResponse(String.valueOf(ResponseEnum.fail),"update fail");
     }
 
 }

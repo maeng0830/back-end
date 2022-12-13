@@ -1,4 +1,5 @@
 spring:
   profiles:
+    active: dev
     default: dev
     include: oauth

@@ -3,11 +3,9 @@ package com.project.devgram.service;
 import com.project.devgram.dto.FollowDto;
 import com.project.devgram.dto.UserDto;
 import com.project.devgram.entity.Follow;
-import com.project.devgram.entity.User;
-import com.project.devgram.oauth2.response.UserResponse;
+import com.project.devgram.entity.Users;
 import com.project.devgram.repository.FollowRepository;
 import com.project.devgram.repository.UserRepository;
-import com.project.devgram.type.ResponseEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,28 +26,28 @@ public class FollowService {
 
 
     @Transactional
-    public UserResponse followAdd(FollowDto dto) {
+    public void followAdd(FollowDto dto) {
 
-        Optional<User> optionalUser = userRepository.findByUsername(dto.getUsername());
-        Optional<User> optionalFollowing = userRepository.findByUsername(dto.getFollowingUsername());
+        Optional<Users> optionalUser = userRepository.findByUsername(dto.getUsername());
+        Optional<Users> optionalFollowing = userRepository.findByUsername(dto.getFollowingUsername());
         List<Follow> followList = followRepository.findByFollowing_UserSeqOrderByFollowing(dto.getFollowingUserSeq());
 
 
         if (optionalUser.isPresent() && optionalFollowing.isPresent() && followList.size() == 0) {
             // 내가 팔로우 신청을 했을때
-            User user = optionalUser.get();
+            Users user = optionalUser.get();
             user.setFollowCount(user.getFollowCount() + 1);
 
-            User followingUser = optionalFollowing.get();
+            Users followingUser = optionalFollowing.get();
             followingUser.setFollowerCount(user.getFollowerCount() + 1);
 
-            User follower = User.builder()
+            Users follower = Users.builder()
                     .userSeq(user.getUserSeq())
                     .followerList(new ArrayList<>())
                     .followingList(new ArrayList<>())
                     .build();
 
-            User following = User.builder()
+            Users following = Users.builder()
                     .userSeq(followingUser.getUserSeq())
                     .followingList(new ArrayList<>())
                     .followerList(new ArrayList<>())
@@ -58,16 +56,13 @@ public class FollowService {
             Follow followers = new Follow();
             followers.setFollower(follower);
             followers.setFollowing(following);
-            
+
             user.getFollowingList().add(followers);
 
             userRepository.save(user);
-
-
-            return new UserResponse(String.valueOf(ResponseEnum.success), "following add success");
+            log.info("finish to save");
         }
 
-        return new UserResponse(String.valueOf(ResponseEnum.fail), "이미 등록된 유저입니다.");
     }
 
     //나를 팔로잉한 사람 리스트
@@ -89,7 +84,7 @@ public class FollowService {
     private List<UserDto> getUserDtoLists(List<Follow> followList, String check) {
         if (followList.size() > 0) {
 
-            List<User> userList = new ArrayList<>();
+            List<Users> userList = new ArrayList<>();
 
             for (int i = 0; i < followList.size(); i++) {
                 //나를 팔로우한 유저 userSeq
@@ -101,11 +96,11 @@ public class FollowService {
                     userSeq = followList.get(i).getFollowing().getUserSeq();
                 }
 
-                Optional<User> optionalUser = userRepository.findById(userSeq);
+                Optional<Users> optionalUser = userRepository.findById(userSeq);
 
                 if (optionalUser.isPresent()) {
 
-                    User userInfo = optionalUser.get();
+                    Users userInfo = optionalUser.get();
                     userList.add(userInfo);
                 }
             }
@@ -145,12 +140,12 @@ public class FollowService {
         Long mySeq = follow.getFollower().getUserSeq();
         Long yourSeq = follow.getFollowing().getUserSeq();
 
-        Optional<User> optionalUser = userRepository.findById(mySeq);
-        Optional<User> optionalFollowing = userRepository.findById(yourSeq);
+        Optional<Users> optionalUser = userRepository.findById(mySeq);
+        Optional<Users> optionalFollowing = userRepository.findById(yourSeq);
 
         if(optionalUser.isPresent() ) {
 
-            User user = optionalUser.get();
+            Users user = optionalUser.get();
             user.setFollowCount(user.getFollowCount() - 1);
 
             userRepository.save(user);
@@ -158,7 +153,7 @@ public class FollowService {
 
         if( optionalFollowing.isPresent()){
 
-            User followingUser = optionalFollowing.get();
+            Users followingUser = optionalFollowing.get();
             followingUser.setFollowerCount(followingUser.getFollowerCount() - 1);
 
             userRepository.save(followingUser);

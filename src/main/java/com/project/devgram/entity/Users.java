@@ -16,11 +16,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicUpdate
-public class User extends BaseEntity {
+public class Users extends BaseEntity {
 
 	@Id // primary key
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long userSeq;
+
 	private String username;
 	private String password;
 	private String email;

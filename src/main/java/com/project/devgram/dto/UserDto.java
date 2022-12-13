@@ -1,8 +1,7 @@
 package com.project.devgram.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.project.devgram.entity.User;
+import com.project.devgram.entity.Users;
 import com.project.devgram.type.ROLE;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Slf4j
@@ -49,11 +47,11 @@ public class UserDto {
         this.followerCount= followerCount;
     }
 
-    public static List<UserDto> of(List<User> userList) {
+    public static List<UserDto> of(List<Users> userList) {
 
         if(userList.size() > 0){
             List<UserDto> followerList = new ArrayList<>();
-            for (User u: userList) {
+            for (Users u: userList) {
                 UserDto dto = UserDto.builder()
                         .userSeq(u.getUserSeq())
                         .username(u.getUsername())
@@ -69,17 +67,6 @@ public class UserDto {
         log.error("followerList error");
         return null;
 
-    }
-
-
-    @SuppressWarnings("unchecked")
-    @JsonProperty("user") // form Name
-    private void unpackNested(Map<String,Object> user) {
-        this.userSeq =Long.parseLong(String.valueOf(user.get("userSeq")));
-        this.username = String.valueOf(user.get("username"));
-        this.password= String.valueOf(user.get("password"));
-        this.annual=String.valueOf(user.get("annual"));
-        this.job= String.valueOf(user.get("job"));
     }
 
 

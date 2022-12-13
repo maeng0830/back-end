@@ -8,9 +8,11 @@ import com.project.devgram.oauth2.principal.PrincipalOauth2UserService;
 import com.project.devgram.oauth2.token.JwtAuthFilter;
 import com.project.devgram.oauth2.token.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -51,7 +53,7 @@ public class SecurityConfig {
                 .antMatchers("/api/admin/**").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()
                 .and()
-                .oauth2Login().loginPage("/api/loginForm").defaultSuccessUrl("/")
+                .oauth2Login().defaultSuccessUrl("/") // loginForm 삭제 1212
                 .successHandler(oAuth2SuccessHandler)
                 .failureHandler(oAuth2AuthenticationFailureHandler)
                 .userInfoEndpoint()
@@ -61,5 +63,14 @@ public class SecurityConfig {
 
         return http.build();
     }
-        //@crossOrigin은 인증이 필요한 요청을 무시
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+
+        return (web) -> web.ignoring()
+                .mvcMatchers("**/favicon.ico","/cdn**","/maxcdn**","/jquery**")
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
+    //@crossOrigin은 인증이 필요한 요청을 무시
 }
