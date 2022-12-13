@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 import static com.project.devgram.type.TokenType.ATK;
@@ -32,12 +33,19 @@ public class RedisService {
 
         tokenRedisRepository.save(user);
     }
-
+    @Transactional
     public boolean deleteRefresh(String id){
         log.info("delete RefreshToken");
+        Optional<RedisUser> targetToken = tokenRedisRepository.findById(id);
 
-          tokenRedisRepository.deleteById(id);
-          return true;
+        if(targetToken.isPresent()){
+
+            RedisUser target = targetToken.get();
+
+            tokenRedisRepository.delete(target);
+            return true;
+        }
+          return false;
         }
 
 
@@ -51,6 +59,7 @@ public class RedisService {
       }
 
       //blackList 추가
+    @Transactional
     public void blackListPush(String token) {
 
         RedisUser user = RedisUser.builder()

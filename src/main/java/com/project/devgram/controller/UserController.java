@@ -85,14 +85,6 @@ public class UserController {
     @PostMapping("/api/user/follow")
     public CommonDto<?> followingUsers(HttpServletRequest request, @Valid @RequestBody FollowDto dto, BindingResult bindingResult)
             throws TokenParsingException {
-        log.info("{} ", dto.getFollowingUserSeq());
-        if(bindingResult.hasErrors()){
-            Map<String,String> errorMap = new HashMap<>();
-            for (FieldError error: bindingResult.getFieldErrors()){
-                errorMap.put(error.getField(),error.getDefaultMessage());
-            }
-            return new CommonDto<>(HttpStatus.BAD_REQUEST.value(),errorMap);
-        }
 
         String token = request.getHeader("Authentication");
 

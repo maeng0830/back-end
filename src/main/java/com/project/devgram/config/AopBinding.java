@@ -1,9 +1,18 @@
 package com.project.devgram.config;
 
+import com.project.devgram.dto.CommonDto;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @Slf4j
@@ -13,7 +22,6 @@ public class AopBinding {
     @Pointcut("execution(* com.project.devgram..*.UserController.*(..))")
     public void UserConExecution() {}
 
-/*
 
     @Around(value="UserConExecution()")
     public Object validationCheck(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
@@ -23,12 +31,12 @@ public class AopBinding {
         String method = proceedingJoinPoint.getSignature().getName();
         Object[] args = proceedingJoinPoint.getArgs();
 
-        System.out.println("type: " + type);
-        System.out.println("method = " + method);
+       log.info("type: " + type);
+        log.info("method = " + method);
 
         for (Object arg : args
         ) {
-            if (arg instanceof AopBinding) {
+            if (arg instanceof BindingResult) {
 
                 BindingResult bindingResult = (BindingResult) arg;
                 log.info("bindingResult {}", bindingResult );
@@ -48,6 +56,5 @@ public class AopBinding {
         }
         return proceedingJoinPoint.proceed();
     }
-*/
 
 }
