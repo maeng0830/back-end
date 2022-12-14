@@ -61,7 +61,7 @@ class ProductServiceImplTest {
 		}
 	}
 
-	@Test
+/*	@Test
 	@DisplayName("Product List - Approve")
 	void list() {
 
@@ -72,7 +72,7 @@ class ProductServiceImplTest {
 		} else {
 			System.out.println("Test Fail");
 		}
-	}
+	}*/
 
 	@Test
 	@DisplayName("Product Delete Test")

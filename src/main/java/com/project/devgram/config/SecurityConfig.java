@@ -23,7 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-
    private final PrincipalOauth2UserService principalOauth2UserService;
     private final PrincipalDetailsService principalDetailsService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
