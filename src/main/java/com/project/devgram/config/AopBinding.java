@@ -22,7 +22,6 @@ public class AopBinding {
     @Pointcut("execution(* com.project.devgram..*.UserController.*(..))")
     public void UserConExecution() {}
 
-
     @Around(value="UserConExecution()")
     public Object validationCheck(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
 
@@ -31,8 +30,8 @@ public class AopBinding {
         String method = proceedingJoinPoint.getSignature().getName();
         Object[] args = proceedingJoinPoint.getArgs();
 
-       log.info("type: " + type);
-        log.info("method = " + method);
+        log.info("type: " + type);
+        log.info("method: " + method);
 
         for (Object arg : args
         ) {

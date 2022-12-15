@@ -14,15 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,9 +28,7 @@ public class UserController {
 
 
     private final TokenService tokenService;
-
     private final UserService userService;
-
     private final FollowService followService;
     private final RedisService redisService;
 
@@ -48,7 +43,6 @@ public class UserController {
 
         // 추가 accessToken 만료 ;
         if (redis) {
-
             redisService.blackListPush(token);
 
             log.info("add black list ");

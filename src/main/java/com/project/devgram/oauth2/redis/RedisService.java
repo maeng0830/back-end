@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
-import static com.project.devgram.type.TokenType.ATK;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -18,7 +16,9 @@ public class RedisService {
 
     private final TokenRedisRepository tokenRedisRepository;
 
+    private final BlackListService blackListService;
 
+    @Transactional
     public void createRefresh(String id,String token,String type,Long period){
 
         log.info("username {} ",id);
@@ -62,24 +62,23 @@ public class RedisService {
     @Transactional
     public void blackListPush(String token) {
 
-        RedisUser user = RedisUser.builder()
-                .id(token)
-                .type(String.valueOf(ATK))
-                .period(300L)
-                .build();
+        blackListService.setAccessTokenVal(token);
 
-        tokenRedisRepository.save(user);
     }
 
     public boolean getBlackToken(String id) {
 
-        Optional<RedisUser> targetToken =tokenRedisRepository.findById(id);
 
-        if(targetToken.isEmpty()){
+      boolean check = blackListService.getBlackListVal(id);
+
+        if(!check){
             // 로그인 가능
             return false;
         }
         // 로그인 실패
+        log.warn("아직 로그인 한지 5분이 지나지 않았습니다.");
         return true;
     }
+
+
 }

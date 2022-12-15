@@ -23,7 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-
    private final PrincipalOauth2UserService principalOauth2UserService;
     private final PrincipalDetailsService principalDetailsService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
@@ -52,6 +51,7 @@ public class SecurityConfig {
                 .antMatchers("/api/user/**").authenticated()
                 .antMatchers("/api/admin/**").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()
+                .and().logout().logoutSuccessUrl("/")
                 .and()
                 .oauth2Login().defaultSuccessUrl("/") // loginForm 삭제 1212
                 .successHandler(oAuth2SuccessHandler)
