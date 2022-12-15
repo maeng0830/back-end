@@ -36,7 +36,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         log.info("토큰 : {} ", token);
 
-        String uri = UriComponentsBuilder.fromUriString("http://localhost:8080/api/oauth/redirect")
+        String uri = UriComponentsBuilder.fromUriString("http://52.194.161.226:8080/api/oauth/redirect")
                 .queryParam("token", token.getToken())
                 .queryParam("refresh",token.getRefreshToken())
                 .build().toUriString();

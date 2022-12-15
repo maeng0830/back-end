@@ -51,6 +51,7 @@ public class SecurityConfig {
                 .antMatchers("/api/user/**").authenticated()
                 .antMatchers("/api/admin/**").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()
+                .and().logout().logoutSuccessUrl("/")
                 .and()
                 .oauth2Login().defaultSuccessUrl("/") // loginForm 삭제 1212
                 .successHandler(oAuth2SuccessHandler)
