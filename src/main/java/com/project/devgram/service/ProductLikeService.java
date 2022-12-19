@@ -53,8 +53,8 @@ public class ProductLikeService {
 			productLikeDto.getProductSeq());
 	}
 
-	public List<ProductLikeDto> list() {
-		List<ProductLike> productLikes = productLikeRepository.findAll();
+	public List<ProductLikeDto> list(String username) {
+		List<ProductLike> productLikes = productLikeRepository.findAllByUsername(username);
 		return ProductLikeDto.of(productLikes);
 	}
 }
