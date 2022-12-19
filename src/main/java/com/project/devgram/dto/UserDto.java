@@ -71,8 +71,8 @@ public class UserDto {
 
 
     public void toDto(String id) {
-        this.providerId = id;
-        this.username = "github" + providerId;
+        this.providerId = "github";
+        this.username = providerId + id;
 
     }
 

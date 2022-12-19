@@ -29,15 +29,11 @@ public class Follow {
         this.follower=follower;
         follower.getFollowingList().add(this);
 
-
     }
 
     public void setFollowing(Users following){
         this.following=following;
         following.getFollowingList().add(this);
-
     }
-
-
 
 }

@@ -26,7 +26,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String username = usernameMaker(oAuth2User);
@@ -36,7 +36,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         log.info("토큰 : {} ", token);
 
-        String uri = UriComponentsBuilder.fromUriString("http://52.194.161.226:8080/api/oauth/redirect")
+        String uri = UriComponentsBuilder.fromUriString("http://localhost:8080/api/oauth/redirect")
                 .queryParam("token", token.getToken())
                 .queryParam("refresh",token.getRefreshToken())
                 .build().toUriString();
