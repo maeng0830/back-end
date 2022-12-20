@@ -38,7 +38,7 @@ public class TokenController {
         String token = request.getHeader("Refresh");
         if (token != null && tokenService.validateToken(token) && tokenService.getTokenCheck(token).equals("RTK")) {
 
-            String username = tokenService.getUname(token);
+            String username = tokenService.getUsername(token);
             String rtkRedis = redisService.getRefreshToken(username);
 
             if (Objects.isNull(rtkRedis)) {

@@ -2,7 +2,7 @@ package com.project.devgram.service;
 
 import com.project.devgram.dto.ProductDto;
 import com.project.devgram.entity.Product;
-import com.project.devgram.repository.IProductRepository;
+import com.project.devgram.repository.ProductRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductServiceImpl implements IProductService {
 
-	private final IProductRepository productRepository;
+	private final ProductRepository productRepository;
 
 	@Override
 	public boolean write(ProductDto parameter) {
