@@ -22,7 +22,7 @@ public class ProductDto {
 	String content;
 	Integer hits;
 	double rating;
-	Integer like_Count;
+	Integer likeCount;
 	double price;
 
 	String status; // 상태
@@ -46,12 +46,11 @@ public class ProductDto {
 			.title(product.getTitle())
 			.content(product.getContent())
 			.hits(product.getHits())
-			.like_Count(product.getLike_Count())
+			.likeCount(product.getLikeCount())
 			.price(product.getPrice())
 			.status(product.getStatus())
 			.build();
 
 	}
-
 
 }

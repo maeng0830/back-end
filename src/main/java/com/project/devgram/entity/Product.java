@@ -34,7 +34,7 @@ public class Product implements ProductCode {
 	private String content;
 	private Integer hits;
 	private double rating;
-	private Integer like_Count;
+	private Integer likeCount;
 	private double price;
 	private String status;
 	private long category_Seq; // 카테고리 id
