@@ -44,6 +44,8 @@ public class Users extends BaseEntity {
 	@OneToMany(mappedBy = "follower",cascade = CascadeType.ALL,orphanRemoval = true)
 	private List<Follow> followerList = new ArrayList<>() ;
 
+	@OneToMany(mappedBy = "users")
+	private List<Review> reviewList = new ArrayList<>();
 
 
 
