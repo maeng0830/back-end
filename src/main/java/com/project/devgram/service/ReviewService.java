@@ -29,31 +29,32 @@ public class ReviewService {
 	public boolean ReviewWrite(ReviewDto parameter) {
 		Users users = userRepository.findByUsername(parameter.getUsername()).orElse(null);
 		if (users == null) {
-			throw new DevGramException(ReviewErrorCode.USER_NOT_EXIST); // 사용자 존재X
+			throw new DevGramException(ReviewErrorCode.USER_NOT_EXIST);
 		}
 
 		Product product = productRepository.findById(parameter.getProductSeq()).orElse(null);
 		if (product == null) {
-			throw new DevGramException(ReviewErrorCode.PRODUCT_NOT_EXIST); // 제품 존재X
+			throw new DevGramException(ReviewErrorCode.PRODUCT_NOT_EXIST);
 		}
 
 		Review review = reviewRepository.findByUsersAndProduct(users, product);
-		if (review != null){
-			throw new DevGramException(ReviewErrorCode.ALREADY_REVIEW); // 이미 리뷰 등록됨
+
+		if (review != null) {
+			throw new DevGramException(ReviewErrorCode.ALREADY_REVIEW);
 		}
 
 		review = Review.builder()
 			.content(parameter.getContent())
 			.mark(parameter.getMark())
-			.status(Review.STATUS_APPROVE) // 최초 승인상태로
+			.status(Review.STATUS_APPROVE)
 			.createdAt(LocalDateTime.now())
-			.users(users)
 			.product(product)
 			.build();
 
 		reviewRepository.save(review);
-
-		product.setRating((product.getRating() + parameter.getMark())); // 기존값 mark  + mark ...++ 평균치를 어떻게 낼지????
+		product.setReviewCount(product.getReviewCount() + 1);
+		product.setTotalRating(product.getTotalRating() + parameter.getMark());
+		product.setRating(product.getTotalRating() / product.getReviewCount());
 		productRepository.save(product);
 		product.addReview(review);
 		return true;

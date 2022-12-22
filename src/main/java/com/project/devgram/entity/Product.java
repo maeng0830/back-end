@@ -37,7 +37,9 @@ public class Product implements ProductCode {
 	private Integer likeCount;
 	private double price;
 	private String status;
-	private long category_Seq; // 카테고리 id
+	private long category_Seq;
+	private int reviewCount;
+	private double totalRating;
 
 	@OneToMany(mappedBy = "product")
 	@JsonManagedReference
