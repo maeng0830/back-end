@@ -86,10 +86,9 @@ public class ChatRoomController {
     @ResponseBody
     public LoginInfo getUserInfo(HttpServletRequest request) {
 
-/*        String token= request.getHeader("Authentication");
-        String name= tokenService.getUsername(token);*/
-        String token= "eyJqd3QiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJnaXRodWI3MTMwMzQ0OCIsInN1YiI6IkFUSyIsInJvbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE2NzE3NjYzNTUsImV4cCI6MTY3MTc2ODE1NX0.6ngsjuaLdoe7fYXjTPSdEWObEOK0k2XlG-s8hMu0EVE";
+        String token= request.getHeader("Authentication");
         String name= tokenService.getUsername(token);
+
 
         return LoginInfo.builder().name(name).token(token).build();
     }
