@@ -32,7 +32,7 @@ public class ChatMessage {
 
     // 메시지 타입 : 입장, 퇴장, 채팅
     public enum MessageType {
-        FIRST, ENTER, QUIT, TALK
+        ENTER, QUIT, TALK
     }
 
     @Id
