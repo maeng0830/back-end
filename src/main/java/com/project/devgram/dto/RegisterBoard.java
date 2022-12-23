@@ -17,11 +17,12 @@ public class RegisterBoard {
 	@AllArgsConstructor
 	public static class Request {
 
-		@Size(max = 100,message = "제목은 200자를 넘을수 없습니다.")
+		@Size(max = 200, message = "제목은 200자를 넘을수 없습니다.")
 		@NotBlank
 		private String title;
 		private String content;
 		private List<String> tagNames;
+		private List<Long> productSeqList;
 	}
 
 
@@ -35,15 +36,16 @@ public class RegisterBoard {
 		private String title;
 		private String content;
 		private Integer likeCount;
-		private List<String> tagNames;
-
-		public static Response from(BoardDto boardDto, List<String> tagNames) {
+		private List<BoardTagDto> boardTagDtos;
+		private List<BoardProductDto> boardProductDtos;
+		public static Response from(BoardDto boardDto, List<BoardTagDto> boardTagDtos,List<BoardProductDto> boardProductDtos) {
 			return Response.builder()
 				.status(boardDto.getStatus())
 				.title(boardDto.getTitle())
 				.content(boardDto.getContent())
 				.likeCount(boardDto.getLikeCount())
-				.tagNames(tagNames)
+				.boardTagDtos(boardTagDtos)
+				.boardProductDtos(boardProductDtos)
 				.build();
 		}
 	}

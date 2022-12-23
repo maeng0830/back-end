@@ -1,9 +1,11 @@
 package com.project.devgram.service;
 
+import com.project.devgram.dto.RegisterBoard;
 import com.project.devgram.dto.SearchBoard.Request;
 import com.project.devgram.dto.UpdateBoard;
 import com.project.devgram.entity.Board;
 import com.project.devgram.dto.BoardDto;
+
 import com.project.devgram.exception.DevGramException;
 import com.project.devgram.exception.errorcode.BoardErrorCode;
 import com.project.devgram.repository.BoardRepository;
@@ -18,13 +20,12 @@ public class BoardService {
 
 	private final BoardRepository boardRepository;
 
-	public BoardDto registerBoard(String title, String content) {
-		return BoardDto.fromEntity(boardRepository
-			.save(Board
-				.builder()
-				.content(content)
-				.title(title)
-				.build()));
+	public Board registerBoard(RegisterBoard.Request request) {
+		return boardRepository.save(Board
+			.builder()
+			.content(request.getContent())
+			.title(request.getTitle())
+			.build());
 	}
 
 	public List<BoardDto> searchBoards(Request request) {
