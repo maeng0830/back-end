@@ -1,9 +1,7 @@
 package com.project.devgram.service;
-
 import com.project.devgram.dto.ProductDto;
 import com.project.devgram.entity.Product;
 import com.project.devgram.repository.ProductRepository;
-import com.project.devgram.repository.ProductLikeRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 public class ProductServiceImpl implements IProductService {
 
 	private final ProductRepository productRepository;
-	private final ProductLikeRepository productLikeRepository;
 
 	@Override
 	public boolean write(ProductDto parameter) {
@@ -90,7 +87,7 @@ public class ProductServiceImpl implements IProductService {
 	@Override
 	public List<ProductDto> bestLikeList() {
 
-		List<Product> products = productRepository.findTop5ByStatusOrderByLikeCountDesc(Product.STATUS_APPROVE);
+		List<Product> products = productRepository.findTop8ByStatusOrderByLikeCountDesc(Product.STATUS_APPROVE);
 		return ProductDto.of(products);
 	}
 
