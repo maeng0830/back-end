@@ -22,36 +22,40 @@ public class ProductDto {
 	String content;
 	Integer hits;
 	double rating;
-	Integer like_Count;
+	Integer likeCount;
 	double price;
 
 	String status; // 상태
 
 	long category_Seq; // 카테고리 id
 
-	public static List<ProductDto> of(List<Product> products){
-		if (products != null){
+	int reviewCount;
+	double totalRating;
+
+	public static List<ProductDto> of(List<Product> products) {
+		if (products != null) {
 			List<ProductDto> productList = new ArrayList<>();
-			for (Product x : products){
+			for (Product x : products) {
 				productList.add(of(x));
 			}
 			return productList;
 		}
 		return null;
 	}
-	public static ProductDto of(Product product){
+
+	public static ProductDto of(Product product) {
 		return ProductDto.builder()
 			.product_Seq(product.getProductSeq())
 			.category_Seq(product.getCategory_Seq())
 			.title(product.getTitle())
 			.content(product.getContent())
 			.hits(product.getHits())
-			.like_Count(product.getLike_Count())
+			.rating(product.getRating())
+			.likeCount(product.getLikeCount())
 			.price(product.getPrice())
 			.status(product.getStatus())
 			.build();
 
 	}
-
 
 }

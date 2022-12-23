@@ -3,10 +3,8 @@ package com.project.devgram.service;
 import com.project.devgram.dto.ProductLikeDto;
 import com.project.devgram.entity.Product;
 import com.project.devgram.entity.ProductLike;
-import com.project.devgram.entity.Users;
 import com.project.devgram.repository.ProductLikeRepository;
 import com.project.devgram.repository.ProductRepository;
-import com.project.devgram.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +28,7 @@ public class ProductLikeService {
 		productLikeRepository.save(productLike);
 
 		product = productRepository.findById(productLike.getProductSeq()).get();
-		product.setLike_Count(product.getLike_Count() + 1);
+		product.setLikeCount(product.getLikeCount() + 1);
 		productRepository.save(product);
 
 	}
@@ -40,7 +38,7 @@ public class ProductLikeService {
 
 		productLikeRepository.delete(productLike.get());
 
-		product.setLike_Count(product.getLike_Count() - 1);
+		product.setLikeCount(product.getLikeCount() - 1);
 		productRepository.save(product);
 
 	}
