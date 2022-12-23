@@ -33,7 +33,7 @@ public class JwtAuthFilter extends GenericFilterBean {
 
         if (accessToken != null && tokenService.validateToken(accessToken)) {
             try {
-                String username = tokenService.getUname(accessToken);
+                String username = tokenService.getUsername(accessToken);
                 log.info("username : {}", username);
 
                if(isLoginUrlCheck(accessToken,requestURI)) {

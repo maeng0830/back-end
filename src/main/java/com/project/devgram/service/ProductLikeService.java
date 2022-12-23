@@ -3,23 +3,20 @@ package com.project.devgram.service;
 import com.project.devgram.dto.ProductLikeDto;
 import com.project.devgram.entity.Product;
 import com.project.devgram.entity.ProductLike;
-import com.project.devgram.entity.Users;
-import com.project.devgram.repository.ProductRepository;
 import com.project.devgram.repository.ProductLikeRepository;
-import com.project.devgram.repository.UserRepository;
-import java.util.List;
-import java.util.Optional;
+import com.project.devgram.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ProductLikeService {
 
 	private final ProductLikeRepository productLikeRepository;
-	private final UserRepository userRepository;
 	private final ProductRepository productRepository;
-	private Users users;
 	private Product product;
 
 	public void productLike(ProductLikeDto productLikeDto) {

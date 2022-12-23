@@ -1,6 +1,5 @@
 package com.project.devgram.oauth2.token;
 
-import com.project.devgram.oauth2.exception.TokenParsingException;
 import com.project.devgram.oauth2.redis.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -41,7 +40,6 @@ public class TokenService {
     public Token generateToken(String username, String role) {
 
 
-
         String[] tokenCheck = {"ATK", "RTK"};
 
         String token = typoToken(username, role, tokenCheck[0], accessTokenValidTime);
@@ -75,29 +73,38 @@ public class TokenService {
     }
 
 
-
     public boolean validateToken(String token) {
+        return this.getClaims(token) != null;
+    }
+
+    private Jws<Claims> getClaims(String token) {
+
         try {
-            Jwts.parserBuilder()
+            return Jwts.parserBuilder()
                     .setSigningKey(secretKey.getBytes())
                     .build()
                     .parseClaimsJws(token);
-            return true;
+
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token");
+            throw ex;
         } catch (ExpiredJwtException ex) {
             log.error("Expired JWT token");
+            throw ex;
         } catch (UnsupportedJwtException ex) {
             log.error("Unsupported JWT token");
+            throw ex;
         } catch (IllegalArgumentException ex) {
             log.error("JWT claims string is empty.");
+            throw ex;
         } catch (NullPointerException ex) {
             log.error("JWT RefreshToken is empty");
+            throw ex;
         }
-        return false;
+
     }
 
-    public String getUsername(final String token) throws TokenParsingException {
+    public String getUsername(final String token) throws JwtException {
 
         final String payloadJWT = token.split("\\.")[1];
         Base64.Decoder decoder = Base64.getUrlDecoder();
@@ -108,7 +115,7 @@ public class TokenService {
 
         if (!jsonArray.containsKey("jti") || !jsonArray.get("sub").toString().equals("ATK")) {
 
-            throw new TokenParsingException("INVALIDATED_TOKEN_ERROR");
+            throw new JwtException("INVALIDATED_TOKEN_ERROR");
         }
         log.info("토큰 파싱 확인: " + jsonArray.get("jti").toString());
 
@@ -119,12 +126,6 @@ public class TokenService {
     private Key getSignKey(String secretKey) {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
-    }
-
-    public String getUname(String token) {
-
-        return Jwts.parserBuilder().setSigningKey(secretKey.getBytes())
-                .build().parseClaimsJws(token).getBody().getId();
     }
 
     public String getTokenCheck(String token) {

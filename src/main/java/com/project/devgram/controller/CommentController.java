@@ -2,6 +2,7 @@ package com.project.devgram.controller;
 
 import com.project.devgram.dto.CommentAccuseDto;
 import com.project.devgram.dto.CommentDto;
+import com.project.devgram.dto.CommentResponse.GroupComment;
 import com.project.devgram.service.CommentService;
 import com.project.devgram.type.CommentStatus;
 import java.util.List;
@@ -34,7 +35,7 @@ public class CommentController {
      * 댓글 조회(보드)
      */
     @GetMapping
-    public List<CommentDto> getCommentList(@RequestParam Long boardSeq) {
+    public List<GroupComment> getCommentList(@RequestParam Long boardSeq) {
         return commentService.getCommentList(boardSeq);
     }
 
@@ -50,7 +51,7 @@ public class CommentController {
      * 댓글 삭제
      */
     @DeleteMapping
-    public CommentDto deleteComment(@RequestParam Long commentSeq) {
+    public String deleteComment(@RequestParam Long commentSeq) {
         return commentService.deleteComment(commentSeq);
     }
 
@@ -73,9 +74,17 @@ public class CommentController {
     /*
      * 댓글 상태 업데이트(관리자)
      */
-    @PutMapping
+    @PutMapping("/status")
     public CommentDto updateCommentStatus(@RequestParam Long commentSeq, @RequestParam
         CommentStatus commentStatus) {
         return commentService.updateCommentStatus(commentSeq, commentStatus);
+    }
+
+    /*
+     * 댓글 내용 업데이트(작성자)
+     */
+    @PutMapping("/content")
+    public CommentDto updateCommentContent(@RequestBody CommentDto commentDto) {
+        return commentService.updateCommentContent(commentDto);
     }
 }

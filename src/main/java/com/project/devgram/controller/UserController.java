@@ -34,7 +34,7 @@ public class UserController {
 
 
     @PostMapping("/api/logout")
-    public void logout(HttpServletRequest request) throws TokenParsingException {
+    public void logout(HttpServletRequest request) {
 
         String token = request.getHeader("Authentication");
         String username = usernameMaker(token);
@@ -52,7 +52,7 @@ public class UserController {
 
 
     @GetMapping("/api/user")
-    public UserDto getUserDetails(HttpServletRequest request) throws TokenParsingException {
+    public UserDto getUserDetails(HttpServletRequest request) {
 
 
         String token = request.getHeader("Authentication");
@@ -64,7 +64,7 @@ public class UserController {
 
 
     @PutMapping("/api/user")
-    public void updateUserDetails(HttpServletRequest request, @RequestBody UserDto dto) throws TokenParsingException {
+    public void updateUserDetails(HttpServletRequest request, @RequestBody UserDto dto) {
 
 
         String token = request.getHeader("Authentication");
@@ -77,8 +77,7 @@ public class UserController {
     }
 
     @PostMapping("/api/user/follow")
-    public CommonDto<?> followingUsers(HttpServletRequest request, @Valid @RequestBody FollowDto dto, BindingResult bindingResult)
-            throws TokenParsingException {
+    public CommonDto<?> followingUsers(HttpServletRequest request, @Valid @RequestBody FollowDto dto, BindingResult bindingResult){
 
         String token = request.getHeader("Authentication");
 
@@ -150,8 +149,8 @@ public class UserController {
     }
 
 
-    private String usernameMaker(String token) throws TokenParsingException {
-        return tokenService.getUsername(token);
+    private String usernameMaker(String token) {
+          return tokenService.getUsername(token);
     }
 
 

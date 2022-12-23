@@ -2,7 +2,7 @@ package com.project.devgram.service;
 
 import com.project.devgram.dto.CategoryDto;
 import com.project.devgram.entity.Category;
-import com.project.devgram.repository.ICategoryRepository;
+import com.project.devgram.repository.CategoryRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CategoryServiceImpl implements ICategoryService {
 
-	private final ICategoryRepository categoryRepository;
+	private final CategoryRepository categoryRepository;
 
 	@Override
 	public List<CategoryDto> list() {
