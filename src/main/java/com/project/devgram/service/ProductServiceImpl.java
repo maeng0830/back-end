@@ -1,5 +1,4 @@
 package com.project.devgram.service;
-
 import com.project.devgram.dto.ProductDto;
 import com.project.devgram.entity.Product;
 import com.project.devgram.repository.ProductRepository;
@@ -28,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
 			.content(parameter.getContent())
 			.price(parameter.getPrice())
 			.hits(0)
-			.like_Count(0)
+			.likeCount(0)
 			.rating(0.0)
 			.status(Product.STATUS_CHECK)
 			.build();
@@ -81,7 +80,14 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<ProductDto> popularList() {
 
-		List<Product> products = productRepository.findTop4ByStatusOrderByHitsDesc(Product.STATUS_APPROVE);
+		List<Product> products = productRepository.findTop5ByStatusOrderByHitsDesc(Product.STATUS_APPROVE);
+		return ProductDto.of(products);
+	}
+
+	@Override
+	public List<ProductDto> bestLikeList() {
+
+		List<Product> products = productRepository.findTop8ByStatusOrderByLikeCountDesc(Product.STATUS_APPROVE);
 		return ProductDto.of(products);
 	}
 
