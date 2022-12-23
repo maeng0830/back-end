@@ -19,7 +19,6 @@ import org.springframework.util.StringUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Board extends BaseTimeEntity {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_seq", nullable = false)
@@ -28,7 +27,22 @@ public class Board extends BaseTimeEntity {
 	@Column(length = 100, name = "title")
 	private String title;
 
-	@Column(columnDefinition = "TEXT")
+	@Column(length = 2000, name = "precautions")
+	private String precautions;
+
+	@Column(length = 2000, name = "self_introduce")
+	private String selfIntroduce;
+
+	@Column(length = 2000, name = "recommend_reason")
+	private String recommendReason;
+
+	@Column(length = 2000, name = "best_product")
+	private String bestProduct;
+
+	@Column(length = 2000, name = "other_product")
+	private String otherProduct;
+
+	@Column(length = 2000, name = "content")
 	private String content;
 
 	@Column(length = 10)
@@ -38,8 +52,13 @@ public class Board extends BaseTimeEntity {
 	private Integer likeCount;
 
 	@Builder
-	public Board(String title, String content) {
+	public Board(String title, String content, String precautions, String selfIntroduce , String recommendReason, String bestProduct, String otherProduct) {
 		this.title = title;
+		this.precautions = precautions;
+		this.selfIntroduce = selfIntroduce;
+		this.recommendReason = recommendReason;
+		this.bestProduct = bestProduct;
+		this.otherProduct = otherProduct;
 		this.content = content;
 		this.status = Status.NORMAL;
 		this.likeCount = 0;
