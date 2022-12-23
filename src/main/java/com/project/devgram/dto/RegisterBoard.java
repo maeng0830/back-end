@@ -22,6 +22,7 @@ public class RegisterBoard {
 		private String title;
 		private String content;
 		private List<String> tagNames;
+		private List<Long> productSeqList;
 	}
 
 
@@ -36,14 +37,15 @@ public class RegisterBoard {
 		private String content;
 		private Integer likeCount;
 		private List<BoardTagDto> boardTagDtos;
-
-		public static Response from(BoardDto boardDto, List<BoardTagDto> boardTagDtos) {
+		private List<BoardProductDto> boardProductDtos;
+		public static Response from(BoardDto boardDto, List<BoardTagDto> boardTagDtos,List<BoardProductDto> boardProductDtos) {
 			return Response.builder()
 				.status(boardDto.getStatus())
 				.title(boardDto.getTitle())
 				.content(boardDto.getContent())
 				.likeCount(boardDto.getLikeCount())
 				.boardTagDtos(boardTagDtos)
+				.boardProductDtos(boardProductDtos)
 				.build();
 		}
 	}
