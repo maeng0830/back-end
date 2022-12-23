@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface IProductService {
+public interface ProductService {
 
 	boolean write(ProductDto parameter); // 글 작성(일반)
 

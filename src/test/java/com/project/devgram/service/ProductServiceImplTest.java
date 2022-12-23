@@ -1,27 +1,22 @@
 package com.project.devgram.service;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import com.project.devgram.dto.CategoryDto;
 import com.project.devgram.dto.ProductDto;
 import com.project.devgram.entity.Product;
-import com.project.devgram.repository.IProductRepository;
-import com.project.devgram.type.ProductCode;
-import java.util.List;
-import java.util.Optional;
+import com.project.devgram.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @SpringBootTest
 class ProductServiceImplTest {
 
 	@Autowired
-	private IProductService productService;
+	private ProductService productService;
 	@Autowired
-	private IProductRepository repository;
+	private ProductRepository repository;
 
 	@Test
 	@DisplayName("Product Write Test")

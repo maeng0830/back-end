@@ -1,21 +1,18 @@
 package com.project.devgram.controller;
 
 import com.project.devgram.dto.CategoryDto;
-import com.project.devgram.service.ICategoryService;
-import java.util.List;
+import com.project.devgram.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryContoller {
 
-	private final ICategoryService categoryService;
+	private final CategoryService categoryService;
 
 	@GetMapping
 	public List<CategoryDto> list() {
