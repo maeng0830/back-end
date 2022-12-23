@@ -16,11 +16,11 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(
-	name="board_product",
-	uniqueConstraints={
+	name = "board_tag",
+	uniqueConstraints = {
 		@UniqueConstraint(
-			name="board_product_constraint",
-			columnNames={"board_seq", "product_seq"}
+			name = "board_tag_constraint",
+			columnNames = {"board_seq", "tag_seq"}
 		)
 	}
 )
@@ -28,17 +28,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BoardProduct {
+public class BoardTag extends BaseTimeEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "board_product_seq", nullable = false)
-	private Long boardLikeSeq;
+	@Column(name = "board_tag_seq", nullable = false)
+	private Long boardTagSeq;
 
 	@ManyToOne
 	@JoinColumn(name = "board_seq")
 	private Board board;
 
 	@ManyToOne
-	@JoinColumn(name = "product_seq")
-	private Product product;
+	@JoinColumn(name = "tag_seq")
+	private Tag tag;
 }

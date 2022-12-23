@@ -5,6 +5,8 @@ import com.project.devgram.entity.Tag;
 import com.project.devgram.exception.DevGramException;
 import com.project.devgram.exception.errorcode.TagErrorCode;
 import com.project.devgram.repository.TagRepository;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -22,29 +24,29 @@ public class TagService {
     /*
      * 태그 등록
      */
-    public void addTag(List<String> tagNames) {
+    public List<Tag> addTag(List<String> tagNames) {
 
         if (tagNames.isEmpty()) {
-            return;
+            return Collections.emptyList();
         }
-
+        List<Tag> tagList = new ArrayList<>();
         for (String tagName : tagNames) {
             Optional<Tag> optionalTag = tagRepository.findByNameIgnoreCase(tagName);
 
+            Tag tag;
             if (optionalTag.isEmpty()) {
-                Tag tag = Tag.builder()
+                tag = Tag.builder()
                     .name(tagName)
                     .useCount(1L)
                     .build();
-
-                tagRepository.save(tag);
             } else {
-                Tag tag = optionalTag.get();
+                tag = optionalTag.get();
                 tag.setUseCount(tag.getUseCount() + 1L);
-
-                tagRepository.save(tag);
             }
+            tag = tagRepository.save(tag);
+            tagList.add(tag);
         }
+        return tagList;
     }
 
     /*
