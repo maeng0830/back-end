@@ -135,7 +135,7 @@ public class UserController {
     }
 
     //oauth2 로그인 후 처리 토큰 발급 api
-    @GetMapping(value = "/api/oauth/redirect")
+    @GetMapping(value = "/login/callback")
     public ResponseEntity<?> getToken(HttpServletResponse response,
                                            @RequestParam(value = "token", required = false) String token
             , @RequestParam(value = "refresh", required = false) String refresh) {
