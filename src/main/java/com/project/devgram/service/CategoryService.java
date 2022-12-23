@@ -3,7 +3,7 @@ package com.project.devgram.service;
 import com.project.devgram.dto.CategoryDto;
 import java.util.List;
 
-public interface ICategoryService {
+public interface CategoryService {
 
 	List<CategoryDto> list();
 

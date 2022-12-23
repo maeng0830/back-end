@@ -1,25 +1,26 @@
 package com.project.devgram.service;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.project.devgram.dto.CategoryDto;
 import com.project.devgram.entity.Category;
-import com.project.devgram.repository.ICategoryRepository;
-import java.util.List;
+import com.project.devgram.repository.CategoryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @SpringBootTest
 @Transactional
 class CategoryServiceImplTest {
 
 	@Autowired
-	private ICategoryService categoryService;
+	private CategoryService categoryService;
 	@Autowired
-	private ICategoryRepository repository;
+	private CategoryRepository repository;
 
 	@Test
 	@DisplayName("Category List Test")

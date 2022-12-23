@@ -3,7 +3,6 @@ package com.project.devgram.controller;
 import com.project.devgram.dto.CommonDto;
 import com.project.devgram.dto.FollowDto;
 import com.project.devgram.dto.UserDto;
-import com.project.devgram.oauth2.exception.TokenParsingException;
 import com.project.devgram.oauth2.redis.RedisService;
 import com.project.devgram.oauth2.token.TokenService;
 import com.project.devgram.service.FollowService;
@@ -105,7 +104,7 @@ public class UserController {
     //나를 팔로우한 사용자
     @GetMapping("/api/user/follow/{UserSeq}")
     public ResponseEntity<List<UserDto>> followerUserList(HttpServletRequest request, FollowDto dto
-            , @PathVariable("UserSeq") Long UserSeq) throws TokenParsingException {
+            , @PathVariable("UserSeq") Long UserSeq) {
 
         String token = request.getHeader("Authentication");
         log.info("token followingUserList {}", token);
@@ -121,7 +120,7 @@ public class UserController {
     //내가 팔로우한 사용자
     @GetMapping("/api/user/following/{UserSeq}")
     public ResponseEntity<List<UserDto>> followingUserList(HttpServletRequest request, FollowDto dto
-            , @PathVariable("UserSeq") Long UserSeq) throws TokenParsingException {
+            , @PathVariable("UserSeq") Long UserSeq) {
 
         String token = request.getHeader("Authentication");
 
@@ -136,8 +135,8 @@ public class UserController {
     }
 
     //oauth2 로그인 후 처리 토큰 발급 api
-    @GetMapping(value = "/api/oauth/redirect")
-    public ResponseEntity<String> getToken(HttpServletResponse response,
+    @GetMapping(value = "/login/callback")
+    public ResponseEntity<?> getToken(HttpServletResponse response,
                                            @RequestParam(value = "token", required = false) String token
             , @RequestParam(value = "refresh", required = false) String refresh) {
 
@@ -145,7 +144,8 @@ public class UserController {
         response.addHeader("Authentication", token);
         response.addHeader("Refresh", refresh);
 
-        return ResponseEntity.ok("token exist header");
+
+        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
 
