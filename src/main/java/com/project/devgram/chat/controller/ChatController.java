@@ -33,7 +33,6 @@ public class ChatController {
         // 로그인 회원 정보로 대화명 설정
         message.setSender(nickname);
 
-
         message.setCurrentTime(LocalDateTime.now());
 
         // 채팅방 인원수 세팅

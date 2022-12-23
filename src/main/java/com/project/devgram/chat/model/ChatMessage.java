@@ -35,10 +35,7 @@ public class ChatMessage {
         ENTER, QUIT, TALK
     }
 
-    @Id
-    private String id;
     private MessageType type; // 메시지 타입
-    @Indexed
     private String roomId; // 방번호
     private String sender; // 메시지 보낸사람
     private String message; // 메시지
