@@ -39,7 +39,7 @@ public class BoardProductDto {
 			.categoryName(category.getName())
 			.content(product.getContent())
 			.hits(product.getHits())
-			.likeCount(product.getLike_Count())
+			.likeCount(product.getLikeCount())
 			.price(product.getPrice())
 			.rating(product.getRating())
 			.status(product.getStatus())
