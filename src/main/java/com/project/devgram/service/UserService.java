@@ -1,15 +1,18 @@
 package com.project.devgram.service;
 
 import com.project.devgram.dto.UserDto;
-
 import com.project.devgram.entity.Users;
 import com.project.devgram.exception.DevGramException;
 import com.project.devgram.exception.errorcode.UserErrorCode;
 import com.project.devgram.repository.UserRepository;
+import com.project.devgram.type.ROLE;
 import com.project.devgram.util.passUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -54,6 +57,30 @@ public class UserService {
             user.setUserSeq(dto.getUserSeq());
 
             userRepository.save(user);
+    }
+
+    public String saveUserDetails(UserDto dto) {
+
+        UUID str = UUID.randomUUID();
+        String sumStr = String.valueOf(str);
+        String extraWord = sumStr.substring(0,6);
+        String username ="github"+dto.getId();
+
+        log.info("username {} ",username);
+        Optional<Users> userEntity = userRepository.findByUsername(username);
+
+        if(userEntity.isPresent()) {
+            throw new DevGramException(UserErrorCode.USER_ALREADY_EXIST,"해당유저는 이미 회원가입을 했습니다.");
+        }
+        Users users = Users.builder()
+                .username(username)
+                .password(extraWord)
+                .email(dto.getEmail())
+                .role(ROLE.ROLE_USER)
+                .build();
+
+        userRepository.save(users);
+        return username;
     }
 
 }
