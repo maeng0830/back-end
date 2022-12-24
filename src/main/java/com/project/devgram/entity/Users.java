@@ -1,5 +1,6 @@
 package com.project.devgram.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.devgram.type.ROLE;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -45,7 +46,12 @@ public class Users extends BaseEntity {
 	private List<Follow> followerList = new ArrayList<>() ;
 
 	@OneToMany(mappedBy = "users")
+	@JsonManagedReference
 	private List<Review> reviewList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "users")
+	@JsonManagedReference
+	private List<ReviewAccuse> reviewAccuseList = new ArrayList<>();
 
 
 
