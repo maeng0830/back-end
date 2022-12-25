@@ -52,7 +52,7 @@ public class TokenController {
                 throw new ForbiddenException("인증정보가 만료되었습니다. ");
             }
 
-            Token newToken = tokenService.generateToken(username, "USER");
+            Token newToken = tokenService.generateToken(username, String.valueOf(ROLE.ROLE_USER));
 
             response.addHeader("Authentication", newToken.getToken());
             response.addHeader("Refresh", newToken.getRefreshToken());
@@ -66,11 +66,22 @@ public class TokenController {
 
     @GetMapping
     public CommonDto<Token> getTokens(@RequestBody @Valid TokenDto dto, BindingResult bindingResult){
-
-            Token tokens = tokenService.generateToken(dto.getUsername(), String.valueOf(ROLE.ROLE_USER));
+        
+            Token tokens = tokenService.generateToken(dto.getUsername(),RoleMaker(dto.getUsername()));
 
             return new CommonDto<>(HttpStatus.OK.value(), tokens);
 
+    }
+    
+    
+
+    //ADMIN ROLE 구분
+    private static String RoleMaker(String username){
+        if(username.equals("ADMIN")){
+           return String.valueOf(ROLE.ROLE_ADMIN);
+        }else {
+            return String.valueOf(ROLE.ROLE_USER);
+        }
     }
 
 

@@ -20,7 +20,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -140,11 +139,11 @@ public class UserController {
 
     }
 
-    //oauth2 로그인 후 처리 토큰 발급 api
+ /*   //oauth2 로그인 후 처리 토큰 발급 api
     @GetMapping(value = "/login/callback")
-    public ResponseEntity<?> getToken(HttpServletResponse response,
-                                           @RequestParam(value = "token", required = false) String token
-            , @RequestParam(value = "refresh", required = false) String refresh) {
+    public ResponseEntity<?> getToken(HttpServletResponse response
+                                    , @RequestParam(value = "token", required = false) String token
+                                    , @RequestParam(value = "refresh", required = false) String refresh) {
 
 
         response.addHeader("Authentication", token);
@@ -152,13 +151,12 @@ public class UserController {
 
 
         return new ResponseEntity<String>(HttpStatus.OK);
-    }
+    }*/
     @PostMapping(value="/api/join")
     public CommonDto<?> JoinUsers(@RequestBody @Valid UserDto dto, BindingResult bindingResult){
 
-        // 원래 있던 유저라면 토큰을 주고 , 없던 애면 저장한 다음 토큰 발행
-     String username = userService.saveUserDetails(dto);
 
+         String username = userService.saveUserDetails(dto);
 
          Token token = tokenService.generateToken(username, String.valueOf(ROLE.ROLE_USER));
 
