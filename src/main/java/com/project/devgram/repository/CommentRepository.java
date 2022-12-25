@@ -22,4 +22,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByBoard_BoardSeqAndCommentStatusNotAndParentCommentSeqIsNotNullAndCommentGroupBetween(Long boardSeq, CommentStatus commentStatus, Long startPS, Long endPS);
 
     List<Comment> findByCommentStatus(CommentStatus commentStatus);
+
+    Long countByBoardSeq(Long boardSeq);
 }

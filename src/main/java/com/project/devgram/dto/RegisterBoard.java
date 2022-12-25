@@ -20,6 +20,11 @@ public class RegisterBoard {
 		@Size(max = 200, message = "제목은 200자를 넘을수 없습니다.")
 		@NotBlank
 		private String title;
+		private String precautions;
+		private String selfIntroduce;
+		private String recommendReason;
+		private String bestProduct;
+		private String otherProduct;
 		private String content;
 		private List<String> tagNames;
 		private List<Long> productSeqList;
@@ -34,6 +39,11 @@ public class RegisterBoard {
 
 		private Status status;
 		private String title;
+		private String precautions;
+		private String selfIntroduce;
+		private String recommendReason;
+		private String bestProduct;
+		private String otherProduct;
 		private String content;
 		private Integer likeCount;
 		private List<BoardTagDto> boardTagDtos;
@@ -42,6 +52,11 @@ public class RegisterBoard {
 			return Response.builder()
 				.status(boardDto.getStatus())
 				.title(boardDto.getTitle())
+				.precautions(boardDto.getPrecautions())
+				.selfIntroduce(boardDto.getSelfIntroduce())
+				.recommendReason(boardDto.getRecommendReason())
+				.bestProduct(boardDto.getBestProduct())
+				.otherProduct(boardDto.getOtherProduct())
 				.content(boardDto.getContent())
 				.likeCount(boardDto.getLikeCount())
 				.boardTagDtos(boardTagDtos)
