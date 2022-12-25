@@ -57,7 +57,7 @@ public class JwtAuthFilter extends GenericFilterBean {
         boolean blackList = tokenService.getListCheck(accessToken);
         String grant = tokenService.getTokenGrant(accessToken);
 
-        log.info("what's your grant: {}",grant);
+        log.info("what's your grant: {}", grant);
         // 로그인 여부 판단
         if(blackList){
             throw new JwtException("토큰을 확인하세요");
