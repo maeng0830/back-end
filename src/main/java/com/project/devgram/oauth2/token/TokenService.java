@@ -134,6 +134,12 @@ public class TokenService {
                 .build().parseClaimsJws(token).getBody().getSubject();
     }
 
+    public String getTokenGrant(String token) {
+
+        return (String) Jwts.parserBuilder().setSigningKey(secretKey.getBytes())
+                .build().parseClaimsJws(token).getBody().get("role");
+    }
+
 
     public boolean getListCheck(String accessToken) {
 
