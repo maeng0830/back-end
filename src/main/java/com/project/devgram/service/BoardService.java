@@ -50,7 +50,7 @@ public class BoardService {
 	public Page<Response> searchBoards(Pageable pageable, String sort) {
 		Page<Response> responsePage = boardRepository.findBy(pageable, sort);
 		for (Response res : responsePage.getContent()) {
-			res.setCommentsCount(commentRepository.countByBoardSeq(res.getId()));
+			res.setCommentsCount(commentRepository.countByBoard_BoardSeq(res.getId()));
 			res.setTags(boardTagRepository.getTagNameByBoardSeq(res.getId()));
 			res.setProducts(boardProductRepository.findByBoardSeq(res.getId()));
 		}
@@ -66,7 +66,7 @@ public class BoardService {
 
 		Page<Response> responsePage = boardRepository.findByFollowerUserSeq(pageable, followerList);
 		for (Response res : responsePage.getContent()) {
-			res.setCommentsCount(commentRepository.countByBoardSeq(res.getId()));
+			res.setCommentsCount(commentRepository.countByBoard_BoardSeq(res.getId()));
 			res.setTags(boardTagRepository.getTagNameByBoardSeq(res.getId()));
 			res.setProducts(boardProductRepository.findByBoardSeq(res.getId()));
 		}
@@ -99,7 +99,7 @@ public class BoardService {
 	public DetailResponse searchBoardDetail(Long boardSeq) {
 		DetailResponse detailResponse = boardRepository.findDetailByBoardSeq(boardSeq);
 		detailResponse.setProductUsed(boardProductRepository.findByBoardSeq(boardSeq));
-		detailResponse.setTagCount(commentRepository.countByBoardSeq(boardSeq));
+		detailResponse.setTagCount(commentRepository.countByBoard_BoardSeq(boardSeq));
 		return detailResponse;
 	}
 }
