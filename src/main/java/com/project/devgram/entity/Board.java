@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Board extends BaseTimeEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_seq", nullable = false)
@@ -50,9 +51,9 @@ public class Board extends BaseTimeEntity {
 
 	@Column(name = "like_count")
 	private Integer likeCount;
-
 	@Builder
-	public Board(String title, String content, String precautions, String selfIntroduce , String recommendReason, String bestProduct, String otherProduct) {
+	public Board(String title, String content, String precautions, String selfIntroduce, String recommendReason, String bestProduct,
+		String otherProduct) {
 		this.title = title;
 		this.precautions = precautions;
 		this.selfIntroduce = selfIntroduce;

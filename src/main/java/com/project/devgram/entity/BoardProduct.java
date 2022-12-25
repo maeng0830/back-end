@@ -32,7 +32,7 @@ public class BoardProduct {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_product_seq", nullable = false)
-	private Long boardLikeSeq;
+	private Long boardProductSeq;
 
 	@ManyToOne
 	@JoinColumn(name = "board_seq")

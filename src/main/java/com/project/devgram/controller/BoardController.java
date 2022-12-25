@@ -1,16 +1,18 @@
 package com.project.devgram.controller;
 
 import com.project.devgram.dto.RegisterBoard;
-import com.project.devgram.dto.SearchBoard;
+import com.project.devgram.dto.SearchBoard.Response;
 import com.project.devgram.dto.UpdateBoard;
+import com.project.devgram.dto.DetailResponse;
 import com.project.devgram.service.BoardService;
 import com.project.devgram.service.BoardServiceContainer;
-import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,8 +34,18 @@ public class BoardController {
 	}
 
 	@GetMapping
-	public List<SearchBoard.Response> searchBoards(@ModelAttribute SearchBoard.Request request) {
-		return SearchBoard.Response.listOf(boardService.searchBoards(request));
+	public Page<Response> searchBoards(@PageableDefault(page = 0, size = 5) Pageable pageable, String sort) {
+		return boardService.searchBoards(pageable,sort);
+	}
+
+	@GetMapping("/{boardSeq}")
+	public DetailResponse detailBoards(@PathVariable Long boardSeq){
+		return boardService.searchBoardDetail(boardSeq);
+	}
+
+	@GetMapping("/follow")
+	public Page<Response> searchFollowingBoards(@PageableDefault(page = 0, size = 5) Pageable pageable){
+		return boardService.searchFollowingBoards(pageable);
 	}
 
 	@PutMapping
