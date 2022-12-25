@@ -3,10 +3,14 @@ package com.project.devgram.controller;
 import com.project.devgram.dto.CommonDto;
 import com.project.devgram.dto.FollowDto;
 import com.project.devgram.dto.UserDto;
+import com.project.devgram.exception.DevGramException;
+import com.project.devgram.exception.errorcode.TokenErrorCode;
 import com.project.devgram.oauth2.redis.RedisService;
+import com.project.devgram.oauth2.token.Token;
 import com.project.devgram.oauth2.token.TokenService;
 import com.project.devgram.service.FollowService;
 import com.project.devgram.service.UserService;
+import com.project.devgram.type.ROLE;
 import com.project.devgram.type.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,15 +94,17 @@ public class UserController {
     }
 
     @DeleteMapping("/api/user/follow")
-    public ResponseEntity<String> followingUserDelete(HttpServletRequest request, @RequestBody FollowDto dto) {
+    public DevGramException followingUserDelete(HttpServletRequest request, @RequestBody FollowDto dto) {
 
         String token = request.getHeader("Authentication");
 
         if (!token.isEmpty()) {
-            log.info("delete follow");
+
             followService.deleteFollowUser(dto.getUserSeq());
+
+            log.info("following remove success");
         }
-        return ResponseEntity.ok("Delete finished");
+        return new DevGramException(TokenErrorCode.NOT_EXIST_TOKEN,"토큰이 비어있습니다.");
     }
 
     //나를 팔로우한 사용자
@@ -147,7 +153,18 @@ public class UserController {
 
         return new ResponseEntity<String>(HttpStatus.OK);
     }
+    @PostMapping(value="/api/join")
+    public CommonDto<?> JoinUsers(@RequestBody @Valid UserDto dto, BindingResult bindingResult){
 
+        // 원래 있던 유저라면 토큰을 주고 , 없던 애면 저장한 다음 토큰 발행
+     String username = userService.saveUserDetails(dto);
+
+
+         Token token = tokenService.generateToken(username, String.valueOf(ROLE.ROLE_USER));
+
+         return new CommonDto<>(HttpStatus.OK.value(), token);
+
+    }
 
     private String usernameMaker(String token) {
           return tokenService.getUsername(token);

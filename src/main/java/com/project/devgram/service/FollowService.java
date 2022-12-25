@@ -29,7 +29,7 @@ public class FollowService {
     public void followAdd(FollowDto dto) {
 
         Optional<Users> optionalUser = userRepository.findByUsername(dto.getUsername());
-        Optional<Users> optionalFollowing = userRepository.findByUsername(dto.getFollowingUsername());
+        Optional<Users> optionalFollowing = userRepository.findById(dto.getFollowingUserSeq());
         List<Follow> followList = followRepository.findByFollowing_UserSeqOrderByFollowing(dto.getFollowingUserSeq());
 
 

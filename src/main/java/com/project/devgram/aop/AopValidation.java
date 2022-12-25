@@ -1,4 +1,4 @@
-package com.project.devgram.config;
+package com.project.devgram.aop;
 
 import com.project.devgram.dto.CommonDto;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +17,10 @@ import java.util.Map;
 @Component
 @Slf4j
 @Aspect
-public class AopBinding {
+public class AopValidation {
 
-    @Pointcut("execution(* com.project.devgram..*.UserController.*(..))")
+    @Pointcut("execution(* com.project.devgram..*.UserController.*(..)) "+ "||"
+            +   " execution(* com.project.devgram..*.TokenController.*(..))" )
     public void UserConExecution() {}
 
     @Around(value="UserConExecution()")
