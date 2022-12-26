@@ -24,5 +24,6 @@ public class DetailResponse {
 	private String last;
 	private Long tagCount;
 	private Long createdBySeq;
+	private String imageUrl;
 	private List<ProductElement> productUsed;
 }
