@@ -37,6 +37,8 @@ public class Users extends BaseEntity {
 	private int followCount;
 	private int followerCount;
 
+	private String imageUrl;
+
 	@Builder.Default
 	@OneToMany(mappedBy = "following",cascade = CascadeType.ALL,orphanRemoval = true)
 	private List<Follow> followingList = new ArrayList<>() ;
@@ -45,6 +47,7 @@ public class Users extends BaseEntity {
 	@OneToMany(mappedBy = "follower",cascade = CascadeType.ALL,orphanRemoval = true)
 	private List<Follow> followerList = new ArrayList<>() ;
 
+	@Builder.Default
 	@OneToMany(mappedBy = "users")
 	private List<Review> reviewList = new ArrayList<>();
 

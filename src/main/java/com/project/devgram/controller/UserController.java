@@ -18,9 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -66,12 +68,15 @@ public class UserController {
 
 
     @PutMapping("/api/user")
-    public void updateUserDetails(HttpServletRequest request, @RequestBody UserDto dto) {
+    public void updateUserDetails(HttpServletRequest request,
+                                  @RequestPart(value="user") UserDto dto
+                                  ,@RequestPart(value = "file") MultipartFile file) throws IOException {
 
 
         String token = request.getHeader("Authentication");
         log.info("token {}", token);
         dto.setUsername(usernameMaker(token));
+        dto.setImageFile(file);
 
         userService.updateUserDetails(dto);
         log.info("update success");
