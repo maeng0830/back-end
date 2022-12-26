@@ -5,11 +5,15 @@ import com.project.devgram.entity.Product;
 import com.project.devgram.entity.Review;
 import com.project.devgram.entity.Users;
 import com.project.devgram.exception.DevGramException;
+import com.project.devgram.exception.errorcode.ReviewAccuseErrorCode;
 import com.project.devgram.exception.errorcode.ReviewErrorCode;
 import com.project.devgram.repository.ProductRepository;
 import com.project.devgram.repository.ReviewRepository;
 import com.project.devgram.repository.UserRepository;
+import com.project.devgram.type.ReviewCode;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,12 +47,13 @@ public class ReviewService {
 			throw new DevGramException(ReviewErrorCode.ALREADY_REVIEW);
 		}
 
-		review = Review.builder()
+			review = Review.builder()
 			.content(parameter.getContent())
 			.mark(parameter.getMark())
-			.status(Review.STATUS_APPROVE)
+			.status(Review.STATUS_POST)
 			.createdAt(LocalDateTime.now())
 			.product(product)
+			.users(users)
 			.build();
 
 		reviewRepository.save(review);
@@ -61,9 +66,73 @@ public class ReviewService {
 
 	}
 
-	public Page<Review> list(Pageable pageable) {
+	public Page<Review> adminList(Pageable pageable) {
 		int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
 		pageable = PageRequest.of(page, 5, Sort.by(Direction.DESC, "reviewSeq"));
 		return reviewRepository.findAll(pageable);
+
+	}
+
+	public List<ReviewDto> Reviewlist(Long reviewSeq) {
+		List<Review> reviews = reviewRepository.findByReviewSeqAndStatusNot(reviewSeq,
+			Review.STATUS_DELETE);
+		if (reviews == null) {
+			throw new DevGramException(ReviewErrorCode.REVIEW_NOT_EXIST);
+		}
+		return ReviewDto.of(reviews);
+	}
+
+	public boolean updateReview(ReviewDto parameter) {
+
+		Optional<Review> optionalReview = reviewRepository.findByReviewSeq(
+			parameter.getReviewSeq());
+		if (!optionalReview.isPresent()) {
+			return false;
+		}
+
+		Product product = productRepository.findById(parameter.getProductSeq()).orElse(null);
+		if (product == null) {
+			throw new DevGramException(ReviewErrorCode.PRODUCT_NOT_EXIST);
+		}
+
+		Review review = optionalReview.get();
+		double presentMark = review.getMark();
+
+		review.setContent(parameter.getContent());
+		review.setMark(parameter.getMark());
+		double newMark = review.getMark();
+
+		product.setTotalRating(product.getTotalRating() - presentMark + newMark);
+		product.setRating(product.getTotalRating() / product.getReviewCount());
+		productRepository.save(product);
+
+		reviewRepository.save(review);
+		return true;
+
+	}
+
+	public boolean deleteReview(ReviewDto parameter) {
+		Review review = reviewRepository.findByReviewSeq(parameter.getReviewSeq()).orElse(null);
+
+		if (review == null) {
+			throw new DevGramException(ReviewAccuseErrorCode.REVIEW_NOT_EXIST);
+		}
+
+		Product product = productRepository.findById(parameter.getProductSeq()).orElse(null);
+		if (product == null) {
+			throw new DevGramException(ReviewErrorCode.PRODUCT_NOT_EXIST);
+		}
+
+		double presentMark = review.getMark();
+
+		review.setStatus(ReviewCode.STATUS_DELETE);
+
+		product.setReviewCount(product.getReviewCount() - 1);
+		product.setTotalRating(product.getTotalRating() - presentMark);
+		product.setRating(product.getTotalRating() / product.getReviewCount());
+		productRepository.save(product);
+
+		reviewRepository.save(review);
+		return true;
 	}
 }

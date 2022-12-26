@@ -19,7 +19,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 @AllArgsConstructor
 @Builder
 public class ReviewDto {
-
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+	private LocalDateTime latestAccusedAt;
 
 	private Long reviewSeq;
 	private double mark;
@@ -47,10 +49,24 @@ public class ReviewDto {
 		return ReviewDto.builder()
 			.reviewSeq(review.getReviewSeq())
 			.content(review.getContent())
+			.mark(review.getMark())
 			.status(review.getStatus())
 			.createdAt(review.getCreatedAt())
-			.username(review.getUsers().getUsername())
 			.productSeq(review.getProduct().getProductSeq())
+			.username(review.getUsers().getUsername())
+			.build();
+	}
+
+	public static ReviewDto of(Review review, LocalDateTime latestAccusedAt){
+		return ReviewDto.builder()
+			.latestAccusedAt(latestAccusedAt)
+			.reviewSeq(review.getReviewSeq())
+			.content(review.getContent())
+			.mark(review.getMark())
+			.status(review.getStatus())
+			.createdAt(review.getCreatedAt())
+			.productSeq(review.getProduct().getProductSeq())
+			.username(review.getUsers().getUsername())
 			.build();
 	}
 }

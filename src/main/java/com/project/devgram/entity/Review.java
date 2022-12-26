@@ -36,7 +36,7 @@ public class Review implements ReviewCode {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long reviewSeq;
-	private double mark; // 별점
+	private double mark;
 	private String content;
 	private String status;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")

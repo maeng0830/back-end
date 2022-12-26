@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReviewAccuseRepository extends JpaRepository<ReviewAccuse, Long> {
 
-	Optional<ReviewAccuse> findTopByReviewReviewSeq(Long reviewSeq, Sort sort);
+	Optional<ReviewAccuse> findTop1ByReviewReviewSeq(Long reviewSeq, Sort sort);
 
 	List<ReviewAccuse> findByReviewReviewSeq(Long reviewSeq, Sort sort);
 }
