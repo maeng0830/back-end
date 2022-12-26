@@ -6,6 +6,7 @@ import com.project.devgram.dto.UpdateBoard;
 import com.project.devgram.dto.DetailResponse;
 import com.project.devgram.service.BoardService;
 import com.project.devgram.service.BoardServiceContainer;
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,18 +36,20 @@ public class BoardController {
 	}
 
 	@GetMapping
-	public Page<Response> searchBoards(@PageableDefault(page = 0, size = 5) Pageable pageable, String sort) {
-		return boardService.searchBoards(pageable,sort);
+	public Page<Response> searchBoards(@PageableDefault(page = 0, size = 5) Pageable pageable, String sort,
+		@RequestParam(required = false) List<Long> tagSeqList) {
+		return boardService.searchBoards(pageable, sort, tagSeqList);
 	}
 
 	@GetMapping("/{boardSeq}")
-	public DetailResponse detailBoards(@PathVariable Long boardSeq){
+	public DetailResponse detailBoards(@PathVariable Long boardSeq) {
 		return boardService.searchBoardDetail(boardSeq);
 	}
 
 	@GetMapping("/follow")
-	public Page<Response> searchFollowingBoards(@PageableDefault(page = 0, size = 5) Pageable pageable){
-		return boardService.searchFollowingBoards(pageable);
+	public Page<Response> searchFollowingBoards(@PageableDefault(page = 0, size = 5) Pageable pageable,
+		@RequestParam(required = false) List<Long> tagSeqList) {
+		return boardService.searchFollowingBoards(pageable, tagSeqList);
 	}
 
 	@PutMapping
