@@ -73,8 +73,8 @@ public class ReviewService {
 
 	}
 
-	public List<ReviewDto> Reviewlist(Long reviewSeq) {
-		List<Review> reviews = reviewRepository.findByReviewSeqAndStatusNot(reviewSeq,
+	public List<ReviewDto> Reviewlist(Long productSeq) {
+		List<Review> reviews = reviewRepository.findByProductProductSeqAndStatusNot(productSeq,
 			Review.STATUS_DELETE);
 		if (reviews == null) {
 			throw new DevGramException(ReviewErrorCode.REVIEW_NOT_EXIST);
