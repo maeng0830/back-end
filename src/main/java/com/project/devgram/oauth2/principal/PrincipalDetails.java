@@ -5,41 +5,21 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 
 @Data
-@Slf4j
-public class PrincipalDetails implements UserDetails, OAuth2User {
+@Slf4j // Oauth2 CLient 의존성 삭제
+public class PrincipalDetails implements UserDetails {
 
-    private Map<String,Object> attributes;
 
     public PrincipalDetails(Users user) {
         this.users = user;
     }
 
-    @Override
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    @Override
-    public String getName() {
-        return null;
-    }
-
     private Users users;
-
-    public PrincipalDetails(Users users,Map<String,Object>attributes){
-
-        this.users = users;
-        this.attributes = attributes;
-
-    }
 
 
     @Override

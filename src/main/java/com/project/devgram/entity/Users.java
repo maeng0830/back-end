@@ -1,7 +1,6 @@
 package com.project.devgram.entity;
 
 import com.project.devgram.type.ROLE;
-import java.io.Serializable;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -23,6 +22,7 @@ public class Users extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long userSeq;
 
+	@Column(unique = true)
 	private String username;
 	private String password;
 	private String email;
