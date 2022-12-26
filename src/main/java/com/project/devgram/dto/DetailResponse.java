@@ -17,7 +17,6 @@ public class DetailResponse {
 
 	private String intro;
 	private String title;
-	private String mainImgUrl;
 	private String productsBest;
 	private String productsRecommend;
 	private String productsRecommendReason;
