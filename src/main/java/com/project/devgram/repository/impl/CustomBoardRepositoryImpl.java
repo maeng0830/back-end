@@ -2,9 +2,12 @@ package com.project.devgram.repository.impl;
 
 import com.project.devgram.dto.DetailResponse;
 import com.project.devgram.dto.SearchBoard.Response;
+import com.project.devgram.entity.QBoardTag;
 import com.project.devgram.repository.CustomBoardRepository;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +25,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<Response> findBy(Pageable pageable, String sort) {
+	public Page<Response> findBy(Pageable pageable, String sort, List<Long> tagSeqList) {
 		List<Response> responseList = queryFactory.select(Projections.fields(Response.class,
 				board.boardSeq.as("id"),
 				board.title,
@@ -35,7 +38,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 			.from(board)
 			.leftJoin(users)
 			.on(board.createdBy.eq(users.username))
-			.where()
+			.where(inTargetTagList(tagSeqList))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.orderBy(createSort(sort))
@@ -43,13 +46,14 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 
 		Long count = queryFactory.select(board.count())
 			.from(board)
+			.where(inTargetTagList(tagSeqList))
 			.fetchOne();
 
 		return new PageImpl<>(responseList, pageable, count);
 	}
 
 	@Override
-	public Page<Response> findByFollowerUserSeq(Pageable pageable, List<Long> followerList) {
+	public Page<Response> findByFollowerUserSeq(Pageable pageable, List<Long> followerList, List<Long> tagSeqList) {
 		List<Response> responseList = queryFactory.select(Projections.fields(Response.class,
 				board.boardSeq.as("id"),
 				board.title,
@@ -62,7 +66,8 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 			.from(board)
 			.leftJoin(users)
 			.on(board.createdBy.eq(users.username))
-			.where(users.userSeq.in(followerList))
+			.where(users.userSeq.in(followerList)
+				.and(inTargetTagList(tagSeqList)))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.orderBy(board.boardSeq.desc())
@@ -72,7 +77,8 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 			.from(board)
 			.leftJoin(users)
 			.on(board.createdBy.eq(users.username))
-			.where(users.userSeq.in(followerList))
+			.where(users.userSeq.in(followerList)
+				.and(inTargetTagList(tagSeqList)))
 			.fetchOne();
 
 		return new PageImpl<>(responseList, pageable, count);
@@ -88,7 +94,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 				board.recommendReason.as("productsRecommendReason"),
 				board.content.as("last"),
 				users.userSeq.as("createdBySeq")
-				))
+			))
 			.from(board)
 			.leftJoin(users)
 			.on(board.createdBy.eq(users.username))
@@ -103,5 +109,16 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 			return board.boardSeq.desc();
 		}
 	}
+
+	private static BooleanExpression inTargetTagList(List<Long> tagSeqList) {
+		if (tagSeqList == null) {
+			return null;
+		} else {
+			return board.boardSeq.in(
+				JPAExpressions.select(QBoardTag.boardTag.board.boardSeq).from(QBoardTag.boardTag)
+					.where(QBoardTag.boardTag.tag.tagSeq.in(tagSeqList)));
+		}
+	}
+
 
 }

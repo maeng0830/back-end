@@ -47,8 +47,8 @@ public class BoardService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<Response> searchBoards(Pageable pageable, String sort) {
-		Page<Response> responsePage = boardRepository.findBy(pageable, sort);
+	public Page<Response> searchBoards(Pageable pageable, String sort, List<Long> tagSeqList) {
+		Page<Response> responsePage = boardRepository.findBy(pageable, sort , tagSeqList);
 		for (Response res : responsePage.getContent()) {
 			res.setCommentsCount(commentRepository.countByBoard_BoardSeq(res.getId()));
 			res.setTags(boardTagRepository.getTagNameByBoardSeq(res.getId()));
@@ -58,13 +58,13 @@ public class BoardService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<Response> searchFollowingBoards(Pageable pageable) {
+	public Page<Response> searchFollowingBoards(Pageable pageable, List<Long> tagSeqList) {
 		//TODO: 로그인 완료시 해당 부분 변경
 		long userSeq = 1L;
 		List<Follow> followList = followRepository.findByFollower_UserSeqOrderByFollower(userSeq);
 		List<Long> followerList = followList.stream().map(Follow -> Follow.getFollowing().getUserSeq()).collect(Collectors.toList());
 
-		Page<Response> responsePage = boardRepository.findByFollowerUserSeq(pageable, followerList);
+		Page<Response> responsePage = boardRepository.findByFollowerUserSeq(pageable, followerList , tagSeqList);
 		for (Response res : responsePage.getContent()) {
 			res.setCommentsCount(commentRepository.countByBoard_BoardSeq(res.getId()));
 			res.setTags(boardTagRepository.getTagNameByBoardSeq(res.getId()));

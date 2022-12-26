@@ -8,9 +8,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface CustomBoardRepository {
 
-	Page<Response> findBy(Pageable pageable, String sort);
+	Page<Response> findBy(Pageable pageable, String sort, List<Long> tagSeqList);
 
-	Page<Response> findByFollowerUserSeq(Pageable pageable, List<Long> followerList);
+	Page<Response> findByFollowerUserSeq(Pageable pageable, List<Long> followerList, List<Long> tagSeqList);
 
 	DetailResponse findDetailByBoardSeq(Long boardSeq);
 }
