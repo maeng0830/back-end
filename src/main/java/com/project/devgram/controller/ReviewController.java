@@ -33,8 +33,8 @@ public class ReviewController {
 		return reviewService.adminList(pageable);
 	}
 	@GetMapping("/list")// seq에 따른 목록
-	public List<ReviewDto> list(@RequestParam Long reviewSeq){
-		return reviewService.Reviewlist(reviewSeq);
+	public List<ReviewDto> list(@RequestParam Long productSeq){
+		return reviewService.Reviewlist(productSeq);
 	}
 
 	@PostMapping("/update") // 리뷰 수정
