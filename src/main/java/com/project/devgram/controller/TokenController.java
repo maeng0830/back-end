@@ -66,8 +66,10 @@ public class TokenController {
 
     @GetMapping
     public CommonDto<Token> getTokens(@RequestBody @Valid TokenDto dto, BindingResult bindingResult){
-        
-            Token tokens = tokenService.generateToken(dto.getId(),RoleMaker(dto.getId()));
+
+            String username = "github"+dto.getId();
+
+            Token tokens = tokenService.generateToken(username,RoleMaker(dto.getId()));
 
             return new CommonDto<>(HttpStatus.OK.value(), tokens);
 
