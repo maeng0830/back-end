@@ -7,8 +7,10 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class CommentAccuseDto {
@@ -22,8 +24,8 @@ public class CommentAccuseDto {
     public static CommentAccuseDto from(CommentAccuse commentAccuse) {
         return CommentAccuseDto.builder()
             .commentAccuseSeq(commentAccuse.getCommentAccuseSeq())
-            .commentSeq(commentAccuse.getCommentSeq())
-            .createdBy(commentAccuse.getCreatedBy())
+            .commentSeq(commentAccuse.getComment().getCommentSeq())
+            .createdBy(commentAccuse.getCreatedBy().getUsername())
             .createdAt(commentAccuse.getCreatedAt())
             .accuseReason(commentAccuse.getAccuseReason())
             .build();

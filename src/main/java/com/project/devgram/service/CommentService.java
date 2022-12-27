@@ -2,21 +2,29 @@ package com.project.devgram.service;
 
 import com.project.devgram.dto.CommentAccuseDto;
 import com.project.devgram.dto.CommentDto;
-import com.project.devgram.dto.CommentResponse.ChildComment;
+import com.project.devgram.dto.CommentResponse.IncludedComment;
 import com.project.devgram.dto.CommentResponse.GroupComment;
+import com.project.devgram.entity.Board;
 import com.project.devgram.entity.Comment;
 import com.project.devgram.entity.CommentAccuse;
+import com.project.devgram.entity.Users;
 import com.project.devgram.exception.DevGramException;
+import com.project.devgram.exception.errorcode.BoardErrorCode;
 import com.project.devgram.exception.errorcode.CommentErrorCode;
+import com.project.devgram.exception.errorcode.UserErrorCode;
+import com.project.devgram.repository.BoardRepository;
 import com.project.devgram.repository.CommentAccuseRepository;
 import com.project.devgram.repository.CommentRepository;
+import com.project.devgram.repository.UserRepository;
 import com.project.devgram.type.CommentStatus;
+import com.project.devgram.util.pagerequest.PageRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
@@ -27,6 +35,8 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentAccuseRepository commentAccuseRepository;
+    private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
     public static final Sort sortByCreatedAtDesc = Sort.by(Direction.DESC, "createdAt");
 
     /*
@@ -34,12 +44,20 @@ public class CommentService {
      */
     public CommentDto addComment(CommentDto commentDto) {
 
+        Board board = boardRepository.findById(commentDto.getBoardSeq())
+            .orElseThrow(() -> new DevGramException(BoardErrorCode.CANNOT_FIND_BOARD_BY_BOARDSEQ));
+
         // 대댓글이 아닌 경우
         if (commentDto.getParentCommentSeq() == null) {
+            System.out.println(commentDto.getCreatedBy());
+            Users users = userRepository.findByUsername(commentDto.getCreatedBy())
+                .orElseThrow(() -> new DevGramException(UserErrorCode.USER_NOT_EXIST));
+
             Comment comment = Comment.builder()
                 .content(commentDto.getContent())
-                .boardSeq(commentDto.getBoardSeq())
-                .createdBy(commentDto.getCreatedBy())
+                .board(board)
+                .createdBy(users)
+                .updatedBy(users)
                 .commentStatus(CommentStatus.POST)
                 .build();
 
@@ -50,19 +68,23 @@ public class CommentService {
 
             // 대댓글인 경우
         } else {
+            Users users = userRepository.findByUsername(commentDto.getCreatedBy())
+                .orElseThrow(() -> new DevGramException(UserErrorCode.USER_NOT_EXIST));
+
             Comment comment = Comment.builder()
                 .content(commentDto.getContent())
                 .parentCommentSeq(commentDto.getParentCommentSeq())
                 .commentGroup(commentDto.getCommentGroup())
-                .boardSeq(commentDto.getBoardSeq())
-                .createdBy(commentDto.getCreatedBy())
+                .board(board)
+                .createdBy(users)
+                .updatedBy(users)
                 .commentStatus(CommentStatus.POST)
                 .build();
 
             String parentCommentCreatedBy = commentRepository.findByCommentSeq(
                     comment.getParentCommentSeq())
                 .orElseThrow(() -> new DevGramException(CommentErrorCode.NOT_EXISTENT_COMMENT))
-                .getCreatedBy();
+                .getCreatedBy().getUsername();
 
             comment.setParentCommentCreatedBy(parentCommentCreatedBy);
 
@@ -73,12 +95,14 @@ public class CommentService {
     /*
      * 댓글 조회(보드)
      */
-    public List<GroupComment> getCommentList(Long boardSeq) {
+    public List<GroupComment> getCommentList(Long boardSeq, PageRequest pageRequest) {
 
         // 부모 댓글 리스트
-        List<Comment> groupCommentList = commentRepository.findByBoardSeqAndCommentStatusNotAndParentCommentSeqIsNull(
-            boardSeq,
-            CommentStatus.DELETE);
+        Page<Comment> groupCommentList =
+            commentRepository
+                .findByBoard_BoardSeqAndCommentStatusNotAndParentCommentSeqIsNull(
+                    boardSeq,
+                    CommentStatus.DELETE, pageRequest.of());
 
         if (groupCommentList.isEmpty()) {
             throw new DevGramException(CommentErrorCode.NOT_EXISTENT_COMMENT_FOR_BOARD);
@@ -91,20 +115,26 @@ public class CommentService {
         }
 
         // 자식 댓글 리스트
-        List<Comment> childCommentList = commentRepository.findByBoardSeqAndCommentStatusNotAndParentCommentSeqIsNotNull(
-            boardSeq, CommentStatus.DELETE);
+        List<Comment> childCommentList =
+            commentRepository
+                .findByBoard_BoardSeqAndCommentStatusNotAndParentCommentSeqIsNotNullAndCommentGroupBetween(
+                    boardSeq,
+                    CommentStatus.DELETE,
+                    groupCommentResponseList.get(0).getCommentGroup(),
+                    groupCommentResponseList.get(groupCommentResponseList.size() - 1)
+                        .getCommentGroup());
 
-        ArrayList<ChildComment> childCommentResponseList = new ArrayList<>();
+        ArrayList<IncludedComment> includedCommentResponseList = new ArrayList<>();
 
         // 자식 댓글이 존재할 경우, 부모 댓글의 필드(리스트)에 저장한다.
         if (!childCommentList.isEmpty()) {
             for (Comment comment : childCommentList) {
 
-                childCommentResponseList.add(ChildComment.from(comment));
+                includedCommentResponseList.add(IncludedComment.from(comment));
             }
 
             groupCommentResponseList.stream()
-                .forEach(group -> group.setChildCommentList(childCommentResponseList.stream()
+                .forEach(group -> group.setIncludedCommentList(includedCommentResponseList.stream()
                     .filter(child -> child.getCommentGroup().equals(group.getCommentGroup()))
                     .collect(
                         Collectors.toList())));
@@ -126,7 +156,7 @@ public class CommentService {
         ArrayList<CommentDto> commentDtoList = new ArrayList<>();
 
         for (Comment comment : commentList) {
-            LocalDateTime latestAccusedAt = commentAccuseRepository.findTop1ByCommentSeq(
+            LocalDateTime latestAccusedAt = commentAccuseRepository.findTop1ByComment_CommentSeq(
                     comment.getCommentSeq(), sortByCreatedAtDesc).orElseThrow(
                     () -> new DevGramException(CommentErrorCode.NOT_EXISTENT_ACCUSE_HISTORY))
                 .getCreatedAt();
@@ -195,11 +225,16 @@ public class CommentService {
 
         if (comment.getCommentStatus().equals(CommentStatus.POST)) {
             comment.setCommentStatus(CommentStatus.ACCUSE);
-            commentRepository.save(comment);
+            comment = commentRepository.save(comment);
         }
 
+        Users users = userRepository.findByUsername(commentAccuseDto.getCreatedBy())
+            .orElseThrow(() -> new DevGramException(
+                UserErrorCode.USER_NOT_EXIST));
+
         CommentAccuse commentAccuse = CommentAccuse.builder()
-            .commentSeq(commentAccuseDto.getCommentSeq())
+            .comment(comment)
+            .createdBy(users)
             .accuseReason(commentAccuseDto.getAccuseReason())
             .build();
 
@@ -210,7 +245,7 @@ public class CommentService {
      * 특정 신고 댓글 신고 내역 조회
      */
     public List<CommentAccuseDto> getAccusedCommentDetail(Long commentSeq) {
-        List<CommentAccuse> commentAccuseList = commentAccuseRepository.findByCommentSeq(
+        List<CommentAccuse> commentAccuseList = commentAccuseRepository.findByComment_CommentSeq(
             commentSeq, sortByCreatedAtDesc);
 
         if (commentAccuseList.isEmpty()) {
@@ -241,7 +276,11 @@ public class CommentService {
         Comment comment = commentRepository.findByCommentSeq(commentDto.getCommentSeq())
             .orElseThrow(() -> new DevGramException(CommentErrorCode.NOT_EXISTENT_COMMENT));
 
+        Users users = userRepository.findByUsername(commentDto.getUpdatedBy())
+            .orElseThrow(() -> new DevGramException(UserErrorCode.USER_NOT_EXIST));
+
         comment.setContent(commentDto.getContent());
+        comment.setUpdatedBy(users);
 
         return CommentDto.from(commentRepository.save(comment));
     }

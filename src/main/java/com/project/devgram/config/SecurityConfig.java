@@ -1,10 +1,7 @@
 package com.project.devgram.config;
 
 
-import com.project.devgram.oauth2.handler.OAuth2AuthenticationFailureHandler;
-import com.project.devgram.oauth2.handler.OAuth2SuccessHandler;
 import com.project.devgram.oauth2.principal.PrincipalDetailsService;
-import com.project.devgram.oauth2.principal.PrincipalOauth2UserService;
 import com.project.devgram.oauth2.token.JwtAuthFilter;
 import com.project.devgram.oauth2.token.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-   private final PrincipalOauth2UserService principalOauth2UserService;
     private final PrincipalDetailsService principalDetailsService;
-    private final OAuth2SuccessHandler oAuth2SuccessHandler;
-    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+
 
     private final CorsConfig corsConfig;
     private final TokenService tokenService;
@@ -49,15 +44,16 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 .authorizeRequests()
                 .antMatchers("/api/user/**").authenticated()
-                .antMatchers("/api/admin/**").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("**/admin").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()
-                .and().logout().logoutSuccessUrl("/")
-                .and()
+                .and().logout().logoutSuccessUrl("/");
+       /*         .and()
                 .oauth2Login().defaultSuccessUrl("/") // loginForm 삭제 1212
                 .successHandler(oAuth2SuccessHandler)
                 .failureHandler(oAuth2AuthenticationFailureHandler)
                 .userInfoEndpoint()
                 .userService(principalOauth2UserService);
+        */
 
         http.addFilterBefore(new JwtAuthFilter(tokenService,principalDetailsService), UsernamePasswordAuthenticationFilter.class);
 
