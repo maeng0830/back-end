@@ -1,15 +1,16 @@
 package com.project.devgram.service;
+
 import com.project.devgram.dto.ProductDto;
+import com.project.devgram.entity.Category;
 import com.project.devgram.entity.Product;
+import com.project.devgram.exception.DevGramException;
+import com.project.devgram.exception.errorcode.ProductErrorCode;
+import com.project.devgram.repository.CategoryRepository;
 import com.project.devgram.repository.ProductRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -17,12 +18,16 @@ import org.springframework.stereotype.Service;
 public class ProductServiceImpl implements IProductService {
 
 	private final ProductRepository productRepository;
+	private final CategoryRepository categoryRepository;
 
 	@Override
 	public boolean write(ProductDto parameter) {
 
+		Category category = categoryRepository.findById(parameter.getCategory_Seq()).orElse(null);
+		if (category == null) {
+			throw new DevGramException(ProductErrorCode.CATEGORY_NOT_EXIST);
+		}
 		Product product = Product.builder()
-			.category_Seq(parameter.getCategory_Seq())
 			.title(parameter.getTitle())
 			.content(parameter.getContent())
 			.price(parameter.getPrice())
@@ -30,6 +35,7 @@ public class ProductServiceImpl implements IProductService {
 			.likeCount(0)
 			.rating(0.0)
 			.status(Product.STATUS_CHECK)
+			.category(category)
 			.build();
 
 		productRepository.save(product);
@@ -37,15 +43,21 @@ public class ProductServiceImpl implements IProductService {
 	}
 
 	@Override
-	public Page<Product> confirm(Pageable pageable) {
-		int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-		pageable = PageRequest.of(page, 5, Sort.by(Direction.DESC, "productSeq"));
-		return productRepository.findAll(pageable);
+	public List<ProductDto> confirm(Pageable pageable) {
+		List<Product> products = productRepository.findAll();
+		return ProductDto.of(products);
 	}
 
 	@Override
 	public List<ProductDto> list(Pageable pageable) {
-		List<Product> products = productRepository.findAllByStatus(Product.STATUS_APPROVE, pageable);
+		List<Product> products = productRepository.findAllByStatus(Product.STATUS_APPROVE,
+			pageable);
+		return ProductDto.of(products);
+	}
+
+	@Override
+	public List<ProductDto> productList() { // 전체 리뷰 (페이징 X, 상태 Approve)
+		List<Product> products = productRepository.findAllByStatus(Product.STATUS_APPROVE);
 		return ProductDto.of(products);
 	}
 
@@ -55,8 +67,13 @@ public class ProductServiceImpl implements IProductService {
 		Long product_Seq = parameter.getProduct_Seq();
 
 		Optional<Product> optionalProduct = productRepository.findById(product_Seq);
-		if (!optionalProduct.isPresent()){
+		if (!optionalProduct.isPresent()) {
 			return false;
+		}
+
+		Category category = categoryRepository.findById(parameter.getCategory_Seq()).orElse(null);
+		if (category == null) {
+			throw new DevGramException(ProductErrorCode.CATEGORY_NOT_EXIST);
 		}
 
 		Product product = optionalProduct.get();
@@ -65,6 +82,7 @@ public class ProductServiceImpl implements IProductService {
 		product.setTitle(parameter.getTitle());
 		product.setContent(parameter.getContent());
 		product.setStatus(parameter.getStatus());
+		product.setCategory(category);
 		productRepository.save(product);
 
 		return true;
@@ -80,15 +98,18 @@ public class ProductServiceImpl implements IProductService {
 	@Override
 	public List<ProductDto> popularList() {
 
-		List<Product> products = productRepository.findTop5ByStatusOrderByHitsDesc(Product.STATUS_APPROVE);
+		List<Product> products = productRepository.findTop5ByStatusOrderByHitsDesc(
+			Product.STATUS_APPROVE);
 		return ProductDto.of(products);
 	}
 
 	@Override
 	public List<ProductDto> bestLikeList() {
 
-		List<Product> products = productRepository.findTop8ByStatusOrderByLikeCountDesc(Product.STATUS_APPROVE);
-		return ProductDto.of(products);
+		List<Product> product = productRepository.findTop8ByStatusOrderByLikeCountDesc(
+			Product.STATUS_APPROVE);
+
+		return ProductDto.of(product);
 	}
 
 	@Override

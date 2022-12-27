@@ -28,7 +28,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/admin") // admin 페이지 - 전체조회 (paging limit 5 내림차순)
-	public Page<Product> confirm(Pageable pageable) {
+	public List<ProductDto> confirm(@PageableDefault(page = 0, size = 5, direction = Direction.DESC) Pageable pageable) {
 		return productService.confirm(pageable);
 	}
 
@@ -38,12 +38,17 @@ public class ProductController {
 		return productService.list(pageable);
 	}
 
-	@GetMapping("/popular") // 일반 - 인기제품 list(조회수순 / limit 4 / 상태 : APPROVE)
+	@GetMapping("/lists") // 페이지 없는 전체 목록
+	public List<ProductDto> lists(){
+		return productService.productList();
+	}
+
+	@GetMapping("/popular") // 일반 - 인기제품 list(조회수순 / limit 5 / 상태 : APPROVE)
 	public List<ProductDto> popularList() {
 		return productService.popularList();
 	}
 
-	@GetMapping("/bestLike") // 일반 - 좋아요 Best(좋아요순 / limit 5 / 상태 : APPROVE)
+	@GetMapping("/bestLike") // 일반 - 좋아요 Best(좋아요순 / limit 8 / 상태 : APPROVE)
 	public List<ProductDto> bestLikeList(){
 		return productService.bestLikeList();
 	}

@@ -10,9 +10,11 @@ public interface IProductService {
 
 	boolean write(ProductDto parameter); // 글 작성(일반)
 
-	Page<Product> confirm(Pageable pageable); // admin 제품관리
+	List<ProductDto> confirm(Pageable pageable); // admin 제품관리
 
 	List<ProductDto> list(Pageable pageable); // 전체 list(Approve)
+
+	List<ProductDto> productList() ; // 페이징 없는 전체 리뷰 List(New!)
 
 	boolean update(ProductDto parameter); // product 업데이트
 
