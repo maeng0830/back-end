@@ -3,8 +3,6 @@ package com.project.devgram.service;
 import com.project.devgram.dto.ProductDto;
 import com.project.devgram.entity.Category;
 import com.project.devgram.entity.Product;
-import com.project.devgram.exception.DevGramException;
-import com.project.devgram.exception.errorcode.ProductErrorCode;
 import com.project.devgram.repository.CategoryRepository;
 import com.project.devgram.repository.ProductRepository;
 import java.util.List;
@@ -25,7 +23,7 @@ public class ProductServiceImpl implements IProductService {
 
 		Category category = categoryRepository.findById(parameter.getCategory_Seq()).orElse(null);
 		if (category == null) {
-			throw new DevGramException(ProductErrorCode.CATEGORY_NOT_EXIST);
+			return false;
 		}
 		Product product = Product.builder()
 			.title(parameter.getTitle())
@@ -73,7 +71,7 @@ public class ProductServiceImpl implements IProductService {
 
 		Category category = categoryRepository.findById(parameter.getCategory_Seq()).orElse(null);
 		if (category == null) {
-			throw new DevGramException(ProductErrorCode.CATEGORY_NOT_EXIST);
+			return false;
 		}
 
 		Product product = optionalProduct.get();
