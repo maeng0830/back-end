@@ -48,11 +48,11 @@ public class ChatRoomRepository {
         hashOpsEnterInfo = redisTemplate.opsForHash();
     }
     @PostConstruct
-    public void valueOpsInit3(){
+    public void valueOpsInit(){
         valueOps = redisTemplate.opsForValue();
     }
     @PostConstruct
-    public void roomMessagesInit4(){
+    public void roomMessagesInit(){
         roomMessages = redisTemplate.opsForHash();
     }
 
@@ -70,6 +70,7 @@ public class ChatRoomRepository {
 
     // 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
     public ChatRoom createChatRoom(String name) {
+
         ChatRoom chatRoom = ChatRoom.create(name);
         log.info("chatRoom {}",chatRoom);
 

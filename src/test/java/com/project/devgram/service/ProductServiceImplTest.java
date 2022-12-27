@@ -29,7 +29,7 @@ class ProductServiceImplTest {
 			.rating(4.5)
 			.status(Product.STATUS_CHECK)
 			.hits(0)
-			.like_Count(0)
+			.likeCount(0)
 			.price(150000)
 			.build();
 
@@ -60,7 +60,7 @@ class ProductServiceImplTest {
 	@DisplayName("Product List - Approve")
 	void list() {
 
-		List<Product> products = repository.findAllByStatus(Product.STATUS_APPROVE);
+		List<Product> products = repository.findAllByStatus(Product.STATUS_APPROVE,1);
 
 		if (products.isEmpty()) {
 			System.out.println("Test Success");
@@ -86,7 +86,7 @@ class ProductServiceImplTest {
 	@DisplayName("Product PopularList Test")
 	void popularList() {
 
-		List<Product> products = repository.findTop4ByStatusOrderByHitsDesc(Product.STATUS_APPROVE);
+		List<Product> products = repository.findTop5ByStatusOrderByHitsDesc(Product.STATUS_APPROVE);
 
 		if (products.isEmpty()) {
 			System.out.println("List is Empty");
