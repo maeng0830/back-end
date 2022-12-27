@@ -34,7 +34,8 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 				board.createdBy,
 				users.userSeq.as("createdByUserSeq"),
 				board.status,
-				board.likeCount))
+				board.likeCount,
+				board.imageUrl))
 			.from(board)
 			.leftJoin(users)
 			.on(board.createdBy.eq(users.username))
@@ -62,7 +63,8 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 				board.createdBy,
 				users.userSeq.as("createdByUserSeq"),
 				board.status,
-				board.likeCount))
+				board.likeCount,
+				board.imageUrl))
 			.from(board)
 			.leftJoin(users)
 			.on(board.createdBy.eq(users.username))
@@ -93,7 +95,8 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 				board.otherProduct.as("productsRecommend"),
 				board.recommendReason.as("productsRecommendReason"),
 				board.content.as("last"),
-				users.userSeq.as("createdBySeq")
+				users.userSeq.as("createdBySeq"),
+				board.imageUrl
 			))
 			.from(board)
 			.leftJoin(users)

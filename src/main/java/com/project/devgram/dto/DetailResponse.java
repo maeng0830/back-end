@@ -17,12 +17,12 @@ public class DetailResponse {
 
 	private String intro;
 	private String title;
-	private String mainImgUrl;
 	private String productsBest;
 	private String productsRecommend;
 	private String productsRecommendReason;
 	private String last;
 	private Long tagCount;
 	private Long createdBySeq;
+	private String imageUrl;
 	private List<ProductElement> productUsed;
 }

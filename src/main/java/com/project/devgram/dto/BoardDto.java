@@ -21,6 +21,7 @@ public class BoardDto {
 	private String otherProduct;
 	private String content;
 	private Status status;
+	private String imageUrl;
 	private Integer likeCount;
 
 	public static BoardDto fromEntity(Board board){
@@ -35,6 +36,7 @@ public class BoardDto {
 			.content(board.getContent())
 			.status(board.getStatus())
 			.likeCount(board.getLikeCount())
+			.imageUrl(board.getImageUrl())
 			.build();
 	}
 }

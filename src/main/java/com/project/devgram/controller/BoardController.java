@@ -6,6 +6,7 @@ import com.project.devgram.dto.UpdateBoard;
 import com.project.devgram.dto.DetailResponse;
 import com.project.devgram.service.BoardService;
 import com.project.devgram.service.BoardServiceContainer;
+import java.io.IOException;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/boards")
@@ -31,8 +34,9 @@ public class BoardController {
 	private final BoardServiceContainer boardServiceContainer;
 
 	@PostMapping
-	public RegisterBoard.Response registerBoard(@RequestBody @Valid RegisterBoard.Request request) {
-		return boardServiceContainer.registerBoard(request);
+	public RegisterBoard.Response registerBoard(@RequestPart(value = "board") @Valid RegisterBoard.Request request,
+		@RequestPart MultipartFile file) throws IOException {
+		return boardServiceContainer.registerBoard(request, file);
 	}
 
 	@GetMapping
