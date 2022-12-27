@@ -41,6 +41,7 @@ public class Product implements ProductCode {
 	private int reviewCount;
 	private double totalRating;
 
+	@Builder.Default
 	@OneToMany(mappedBy = "product")
 	@JsonManagedReference
 	private List<Review> reviewList = new ArrayList<>();

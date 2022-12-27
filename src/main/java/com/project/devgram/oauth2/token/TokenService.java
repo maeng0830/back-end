@@ -22,7 +22,6 @@ import java.util.Map;
 @Slf4j
 public class TokenService {
 
-
     @Value("${jwt.secretKey}")
     private String secretKey;
 
@@ -37,10 +36,11 @@ public class TokenService {
     }
 
 
-    public Token generateToken(String username, String role) {
-
+    public Token generateToken(String id, String role) {
 
         String[] tokenCheck = {"ATK", "RTK"};
+        String provider = "github";
+        String username = provider + id;
 
         String token = typoToken(username, role, tokenCheck[0], accessTokenValidTime);
         String refreshToken = typoToken(username, role, tokenCheck[1], refreshTokenValidTime);

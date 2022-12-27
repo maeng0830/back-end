@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ImageUploader uploader;
 
 
     public UserDto getUserDetails(String username){
@@ -43,18 +45,23 @@ public class UserService {
         }
 
 
-    public void updateUserDetails(UserDto dto) {
+    public void updateUserDetails(UserDto dto) throws IOException {
         log.info("dtos {}",dto);
+        String IMAGE_DIR = "DevUser";
 
         Users user =userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(()-> new DevGramException(UserErrorCode.USER_NOT_EXIST));
 
         String encPassword = passUtil.encPassword(dto.getPassword());
+        String imageUrl = uploader.upload(dto.getImageFile(), IMAGE_DIR);
 
             user.setPassword(encPassword);
             user.setJob(dto.getJob());
             user.setAnnual(dto.getAnnual());
             user.setUserSeq(dto.getUserSeq());
+            user.setImageUrl(imageUrl);
+
+
 
             userRepository.save(user);
     }
@@ -75,6 +82,7 @@ public class UserService {
         Users users = Users.builder()
                 .username(username)
                 .password(extraWord)
+                .providerId(dto.getId())
                 .email(dto.getEmail())
                 .role(ROLE.ROLE_USER)
                 .build();

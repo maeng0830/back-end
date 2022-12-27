@@ -13,8 +13,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class TokenDto {
 
-    @NotNull(message = "꼭 보내주세요 username")
-    private String username;
+    @NotNull(message = "꼭 보내주세요 id")
+    private String id;
 
 
     private ROLE role;
