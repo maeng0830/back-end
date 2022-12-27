@@ -26,6 +26,7 @@ public class RegisterBoard {
 		private String bestProduct;
 		private String otherProduct;
 		private String content;
+		private String imageUrl;
 		private List<String> tagNames;
 		private List<Long> productSeqList;
 	}
@@ -45,6 +46,7 @@ public class RegisterBoard {
 		private String bestProduct;
 		private String otherProduct;
 		private String content;
+		private String imageUrl;
 		private Integer likeCount;
 		private List<BoardTagDto> boardTagDtos;
 		private List<BoardProductDto> boardProductDtos;
@@ -59,6 +61,7 @@ public class RegisterBoard {
 				.otherProduct(boardDto.getOtherProduct())
 				.content(boardDto.getContent())
 				.likeCount(boardDto.getLikeCount())
+				.imageUrl(boardDto.getImageUrl())
 				.boardTagDtos(boardTagDtos)
 				.boardProductDtos(boardProductDtos)
 				.build();

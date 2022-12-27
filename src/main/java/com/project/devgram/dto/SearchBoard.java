@@ -26,6 +26,7 @@ public class SearchBoard {
 		private Long createdByUserSeq;
 		private String createdByImg;
 		private Status status;
+		private String imageUrl;
 		private List<String> tags;
 		private List<ProductElement> products;
 	}
