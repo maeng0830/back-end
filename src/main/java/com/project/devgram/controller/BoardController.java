@@ -4,10 +4,12 @@ import com.project.devgram.dto.RegisterBoard;
 import com.project.devgram.dto.SearchBoard.Response;
 import com.project.devgram.dto.UpdateBoard;
 import com.project.devgram.dto.DetailResponse;
+import com.project.devgram.oauth2.token.TokenService;
 import com.project.devgram.service.BoardService;
 import com.project.devgram.service.BoardServiceContainer;
 import java.io.IOException;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,7 +34,7 @@ public class BoardController {
 
 	private final BoardService boardService;
 	private final BoardServiceContainer boardServiceContainer;
-
+	private final TokenService tokenService;
 	@PostMapping
 	public RegisterBoard.Response registerBoard(@RequestPart(value = "board") @Valid RegisterBoard.Request request,
 		@RequestPart MultipartFile file) throws IOException {
@@ -52,8 +54,10 @@ public class BoardController {
 
 	@GetMapping("/follow")
 	public Page<Response> searchFollowingBoards(@PageableDefault(page = 0, size = 5) Pageable pageable,
-		@RequestParam(required = false) List<Long> tagSeqList) {
-		return boardService.searchFollowingBoards(pageable, tagSeqList);
+		@RequestParam(required = false) List<Long> tagSeqList, HttpServletRequest servletRequest) {
+		String username = tokenService.getUsername(servletRequest.getHeader("Authentication"));
+
+		return boardService.searchFollowingBoards(username ,pageable, tagSeqList);
 	}
 
 	@PutMapping
