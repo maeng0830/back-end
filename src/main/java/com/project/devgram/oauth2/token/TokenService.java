@@ -36,11 +36,10 @@ public class TokenService {
     }
 
 
-    public Token generateToken(String id, String role) {
+    public Token generateToken(String username, String role) {
 
         String[] tokenCheck = {"ATK", "RTK"};
-        String provider = "github";
-        String username = provider + id;
+
 
         String token = typoToken(username, role, tokenCheck[0], accessTokenValidTime);
         String refreshToken = typoToken(username, role, tokenCheck[1], refreshTokenValidTime);
@@ -113,10 +112,6 @@ public class TokenService {
         BasicJsonParser jsonParser = new BasicJsonParser();
         Map<String, Object> jsonArray = jsonParser.parseMap(payload);
 
-        if (!jsonArray.containsKey("jti") || !jsonArray.get("sub").toString().equals("ATK")) {
-
-            throw new JwtException("INVALIDATED_TOKEN_ERROR");
-        }
         log.info("토큰 파싱 확인: " + jsonArray.get("jti").toString());
 
         return jsonArray.get("jti").toString();
@@ -139,6 +134,8 @@ public class TokenService {
         return (String) Jwts.parserBuilder().setSigningKey(secretKey.getBytes())
                 .build().parseClaimsJws(token).getBody().get("role");
     }
+    
+
 
 
     public boolean getListCheck(String accessToken) {

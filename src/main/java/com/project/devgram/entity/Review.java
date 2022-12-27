@@ -53,6 +53,7 @@ public class Review implements ReviewCode {
 	@JsonBackReference
 	private Product product;
 
+	@Builder.Default
 	@OneToMany(mappedBy = "review")
 	@JsonManagedReference
 	private List<ReviewAccuse> reviewAccuseList = new ArrayList<>();

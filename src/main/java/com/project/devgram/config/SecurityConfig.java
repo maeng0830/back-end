@@ -43,10 +43,14 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("/api/user/**").authenticated()
+                .antMatchers("*").authenticated()
+                .antMatchers("/api/user/**").access("hasRole('ROLE_USER') OR hasRole('ROLE_ADMIN')")
                 .antMatchers("**/admin").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()
                 .and().logout().logoutSuccessUrl("/");
+
+        /* 관리자는 회원페이지 조회가 가능, 유저는 ADMIN 페이지 조회 불가능*/
+
        /*         .and()
                 .oauth2Login().defaultSuccessUrl("/") // loginForm 삭제 1212
                 .successHandler(oAuth2SuccessHandler)

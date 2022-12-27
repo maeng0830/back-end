@@ -73,11 +73,15 @@ public class UserService {
         String extraWord = sumStr.substring(0,6);
         String username ="github"+dto.getId();
 
-        log.info("username {} ",username);
+        log.info("username {} ",dto.getId());
+
         Optional<Users> userEntity = userRepository.findByUsername(username);
 
         if(userEntity.isPresent()) {
-            throw new DevGramException(UserErrorCode.USER_ALREADY_EXIST,"해당유저는 이미 회원가입을 했습니다.");
+          log.info("user update");
+          Users modifyUser = userEntity.get();
+
+          return modifyUser.getUsername();
         }
         Users users = Users.builder()
                 .username(username)
