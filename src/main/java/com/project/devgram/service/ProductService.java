@@ -1,12 +1,10 @@
 package com.project.devgram.service;
 
 import com.project.devgram.dto.ProductDto;
-import com.project.devgram.entity.Product;
 import java.util.List;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface IProductService {
+public interface ProductService {
 
 	boolean write(ProductDto parameter); // 글 작성(일반)
 

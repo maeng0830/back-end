@@ -1,11 +1,9 @@
 package com.project.devgram.controller;
 
 import com.project.devgram.dto.ProductDto;
-import com.project.devgram.entity.Product;
-import com.project.devgram.service.IProductService;
+import com.project.devgram.service.ProductService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -20,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/products")
 public class ProductController {
 
-	private final IProductService productService;
+	private final ProductService productService;
 
 	@PostMapping // 일반회원 글작성
 	public boolean write(@RequestBody ProductDto parameter) {

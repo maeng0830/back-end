@@ -1,7 +1,7 @@
 package com.project.devgram.controller;
 
 import com.project.devgram.dto.CategoryDto;
-import com.project.devgram.service.ICategoryService;
+import com.project.devgram.service.CategoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/categories")
 public class CategoryContoller {
 
-	private final ICategoryService categoryService;
+	private final CategoryService categoryService;
 
 	@GetMapping
 	public List<CategoryDto> list() {
