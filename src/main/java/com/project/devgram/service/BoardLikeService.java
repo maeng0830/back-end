@@ -39,7 +39,7 @@ public class BoardLikeService {
 
 		board.increaseLikeCount();
 
-		return BoardLikeDto.from(boardLikeRepository.save(BoardLikeDto.toEntity(board, user)));
+		return BoardLikeDto.from(boardLikeRepository.save(BoardLikeDto.toEntity(board, user, username)));
 
 	}
 

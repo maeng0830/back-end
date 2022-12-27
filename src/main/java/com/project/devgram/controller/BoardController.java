@@ -37,8 +37,10 @@ public class BoardController {
 	private final TokenService tokenService;
 	@PostMapping
 	public RegisterBoard.Response registerBoard(@RequestPart(value = "board") @Valid RegisterBoard.Request request,
-		@RequestPart MultipartFile file) throws IOException {
-		return boardServiceContainer.registerBoard(request, file);
+		@RequestPart MultipartFile file , HttpServletRequest servletRequest) throws IOException {
+		String username = tokenService.getUsername(servletRequest.getHeader("Authentication"));
+
+		return boardServiceContainer.registerBoard(username, request, file);
 	}
 
 	@GetMapping

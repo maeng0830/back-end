@@ -23,18 +23,18 @@ public class BoardServiceContainer {
 	private final BoardProductService boardProductService;
 	private final ImageUploader uploader;
 
-	public Response registerBoard(Request request, MultipartFile file) throws IOException {
+	public Response registerBoard(String username, Request request, MultipartFile file) throws IOException {
 		List<Tag> tagList = tagService.addTag(request.getTagNames());
 
 		String imageUrl = uploader.upload(file, "BOARD");
 
 		request.setImageUrl(imageUrl);
 
-		Board board = boardService.registerBoard(request);
+		Board board = boardService.registerBoard(request , username);
 
-		List<BoardTagDto> boardTagDtos = boardTagService.registerBoardTag(board, tagList);
+		List<BoardTagDto> boardTagDtos = boardTagService.registerBoardTag(board, tagList , username);
 
-		List<BoardProductDto> boardProductDtos = boardProductService.registerBoardProduct(board, request.getProductSeqList());
+		List<BoardProductDto> boardProductDtos = boardProductService.registerBoardProduct(board, request.getProductSeqList() , username);
 
 		return Response.from(BoardDto.fromEntity(board), boardTagDtos, boardProductDtos);
 	}

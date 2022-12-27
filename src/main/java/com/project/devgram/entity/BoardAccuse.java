@@ -45,4 +45,6 @@ public class BoardAccuse extends BaseTimeEntity {
 	@JoinColumn(name = "user_seq")
 	private Users user;
 
+	private String createdBy;
+	private String updatedBy;
 }

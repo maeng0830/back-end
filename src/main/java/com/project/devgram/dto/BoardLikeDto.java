@@ -20,10 +20,12 @@ public class BoardLikeDto {
 	private Long boardSeq;
 	private String boardTitle;
 
-	public static BoardLike toEntity(Board board, Users user) {
+	public static BoardLike toEntity(Board board, Users user,String userName) {
 		return BoardLike.builder()
 			.board(board)
 			.user(user)
+			.createdBy(userName)
+			.updatedBy(userName)
 			.build();
 	}
 

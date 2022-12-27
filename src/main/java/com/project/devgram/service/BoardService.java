@@ -1,6 +1,6 @@
 package com.project.devgram.service;
 
-import com.project.devgram.dto.RegisterBoard;
+import com.project.devgram.dto.RegisterBoard.Request;
 import com.project.devgram.dto.SearchBoard.Response;
 import com.project.devgram.dto.UpdateBoard;
 import com.project.devgram.dto.DetailResponse;
@@ -36,7 +36,7 @@ public class BoardService {
 	private final UserRepository userRepository;
 	private final FollowRepository followRepository;
 
-	public Board registerBoard(RegisterBoard.Request request) {
+	public Board registerBoard(Request request, String username) {
 		return boardRepository.save(Board
 			.builder()
 			.content(request.getContent())
@@ -46,12 +46,14 @@ public class BoardService {
 			.recommendReason(request.getRecommendReason())
 			.selfIntroduce(request.getSelfIntroduce())
 			.precautions(request.getPrecautions())
+			.createdBy(username)
+			.updatedBy(username)
 			.build());
 	}
 
 	@Transactional(readOnly = true)
 	public Page<Response> searchBoards(Pageable pageable, String sort, List<Long> tagSeqList) {
-		Page<Response> responsePage = boardRepository.findBy(pageable, sort , tagSeqList);
+		Page<Response> responsePage = boardRepository.findBy(pageable, sort, tagSeqList);
 		for (Response res : responsePage.getContent()) {
 			res.setCommentsCount(commentRepository.countByBoard_BoardSeq(res.getId()));
 			res.setTags(boardTagRepository.getTagNameByBoardSeq(res.getId()));
@@ -67,7 +69,7 @@ public class BoardService {
 		List<Follow> followList = followRepository.findByFollower_UserSeqOrderByFollower(user.getUserSeq());
 		List<Long> followerList = followList.stream().map(Follow -> Follow.getFollowing().getUserSeq()).collect(Collectors.toList());
 
-		Page<Response> responsePage = boardRepository.findByFollowerUserSeq(pageable, followerList , tagSeqList);
+		Page<Response> responsePage = boardRepository.findByFollowerUserSeq(pageable, followerList, tagSeqList);
 		for (Response res : responsePage.getContent()) {
 			res.setCommentsCount(commentRepository.countByBoard_BoardSeq(res.getId()));
 			res.setTags(boardTagRepository.getTagNameByBoardSeq(res.getId()));
