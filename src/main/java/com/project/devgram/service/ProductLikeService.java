@@ -5,7 +5,6 @@ import com.project.devgram.entity.Product;
 import com.project.devgram.entity.ProductLike;
 import com.project.devgram.entity.Users;
 import com.project.devgram.exception.DevGramException;
-import com.project.devgram.exception.errorcode.ProductErrorCode;
 import com.project.devgram.exception.errorcode.UserErrorCode;
 import com.project.devgram.repository.ProductLikeRepository;
 import com.project.devgram.repository.ProductRepository;
@@ -26,9 +25,6 @@ public class ProductLikeService {
 	public void productLike(ProductLikeDto productLikeDto) {
 
 		Product product = productRepository.findById(productLikeDto.getProductSeq()).orElse(null);
-		if (product == null){
-			throw new DevGramException(ProductErrorCode.CANNOT_FIND_PRODUCT_BY_PRODUCT_SEQ);
-		}
 
 		Users users = userRepository.findByUsername(productLikeDto.getUsername()).orElse(null);
 		if (users == null){
@@ -49,9 +45,7 @@ public class ProductLikeService {
 	public void productUnLike(ProductLikeDto productLikeDto) {
 
 		Product product = productRepository.findById(productLikeDto.getProductSeq()).orElse(null);
-		if (product == null){
-			throw new DevGramException(ProductErrorCode.CANNOT_FIND_PRODUCT_BY_PRODUCT_SEQ);
-		}
+
 		Users users = userRepository.findByUsername(productLikeDto.getUsername()).orElse(null);
 		if (users == null){
 			throw new DevGramException(UserErrorCode.USER_NOT_EXIST);
@@ -68,9 +62,7 @@ public class ProductLikeService {
 	public Optional<ProductLike> findProductLikeByUsernameAndProductSeq(
 		ProductLikeDto productLikeDto) {
 		Product product = productRepository.findById(productLikeDto.getProductSeq()).orElse(null);
-		if (product == null){
-			throw new DevGramException(ProductErrorCode.CANNOT_FIND_PRODUCT_BY_PRODUCT_SEQ);
-		}
+
 		return productLikeRepository.findProductLikeByUsersUsernameAndProductProductSeq(
 			productLikeDto.getUsername(),
 			productLikeDto.getProductSeq());
