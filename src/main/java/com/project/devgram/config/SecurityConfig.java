@@ -43,7 +43,6 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("*").authenticated()
                 .antMatchers("/api/user/**").access("hasRole('ROLE_USER') OR hasRole('ROLE_ADMIN')")
                 .antMatchers("**/admin").access("hasRole('ROLE_ADMIN')")
                 .anyRequest().permitAll()

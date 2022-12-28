@@ -19,7 +19,7 @@ import java.util.Map;
 @Aspect
 public class AopValidation {
 
-    @Pointcut("execution(* com.project.devgram..*.UserController.*(..)) "+ "||"
+    @Pointcut("execution(* com.project.devgram..*.UserController.*(..)) " + "||"
             +   " execution(* com.project.devgram..*.TokenController.*(..))" )
     public void UserConExecution() {}
 
