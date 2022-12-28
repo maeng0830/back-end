@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 	List<Product> findAllByStatus(String status, Pageable pageable);
+	List<Product> findAllByStatus(String status);
 	List<Product> findTop5ByStatusOrderByHitsDesc(String status);
 	List<Product> findTop8ByStatusOrderByLikeCountDesc(String status);
 

@@ -1,6 +1,7 @@
 package com.project.devgram.dto;
 
 
+import com.project.devgram.entity.Category;
 import com.project.devgram.entity.Product;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,10 @@ public class ProductDto {
 	int reviewCount;
 	double totalRating;
 
+	//카테고리
+	private String categoryName;
+	private String categoryColor;
+
 	public static List<ProductDto> of(List<Product> products) {
 		if (products != null) {
 			List<ProductDto> productList = new ArrayList<>();
@@ -46,7 +51,6 @@ public class ProductDto {
 	public static ProductDto of(Product product) {
 		return ProductDto.builder()
 			.product_Seq(product.getProductSeq())
-			.category_Seq(product.getCategory_Seq())
 			.title(product.getTitle())
 			.content(product.getContent())
 			.hits(product.getHits())
@@ -54,8 +58,10 @@ public class ProductDto {
 			.likeCount(product.getLikeCount())
 			.price(product.getPrice())
 			.status(product.getStatus())
+			.category_Seq(product.getCategory().getCategory_Seq())
+			.categoryColor(product.getCategory().getColor())
+			.categoryName(product.getCategory().getName())
 			.build();
 
 	}
-
 }

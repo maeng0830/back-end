@@ -38,13 +38,15 @@ public class CategoryServiceImpl implements CategoryService {
 		Optional<Category> optionalCategory = categoryRepository.findById(
 			parameter.getCategory_Seq());
 
-		if (optionalCategory.isPresent()) {
-			Category category = optionalCategory.get();
-			category.setName(parameter.getName());
-			category.setColor(parameter.getColor());
-
-			categoryRepository.save(category);
+		if (!optionalCategory.isPresent()) {
+			return false;
 		}
+		Category category = optionalCategory.get();
+		category.setName(parameter.getName());
+		category.setColor(parameter.getColor());
+
+		categoryRepository.save(category);
+
 		return true;
 	}
 
