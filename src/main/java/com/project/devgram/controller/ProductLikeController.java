@@ -9,10 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,8 +34,8 @@ public class ProductLikeController {
 		return new ResponseEntity<>(productLikeDto, HttpStatus.OK);
 	}
 
-	@GetMapping("/list/{username}") // username 에 따른 목록 반환
-	public List<ProductLikeDto> list(@PathVariable String username){
+	@GetMapping("/list") // username 에 따른 목록 반환
+	public List<ProductLikeDto> list(@RequestParam String username){
 		return productLikeService.list(username);
 	}
 

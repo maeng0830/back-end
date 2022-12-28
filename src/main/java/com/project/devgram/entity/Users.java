@@ -58,6 +58,11 @@ public class Users extends BaseEntity {
 	@JsonManagedReference
 	private List<ReviewAccuse> reviewAccuseList = new ArrayList<>();
 
+	@Builder.Default
+	@OneToMany(mappedBy = "users")
+	@JsonManagedReference
+	private List<ProductLike> productLikes = new ArrayList<>();
+
 
 
 }

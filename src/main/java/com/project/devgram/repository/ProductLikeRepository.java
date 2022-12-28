@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductLikeRepository extends JpaRepository<ProductLike, Long> {
 
-	Optional<ProductLike> findProductLikeByUsernameAndProductSeq(String username,
+	Optional<ProductLike> findProductLikeByUsersUsernameAndProductProductSeq(String username,
 		Long productSeq); // 게시글 + users 조합
 
-	List<ProductLike> findAllByUsername(String username);
+	List<ProductLike> findAllByUsersUsername(String username);
 
 }
