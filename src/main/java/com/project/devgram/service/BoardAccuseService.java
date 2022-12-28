@@ -6,11 +6,11 @@ import com.project.devgram.entity.Board;
 import com.project.devgram.entity.Users;
 import com.project.devgram.exception.DevGramException;
 import com.project.devgram.exception.errorcode.BoardAccuseErrorCode;
+import com.project.devgram.exception.errorcode.UserErrorCode;
 import com.project.devgram.repository.BoardAccuseRepository;
 import com.project.devgram.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,12 +27,12 @@ public class BoardAccuseService {
 		return boardAccuseRepository.findBy(request);
 	}
 
-	public BoardAccuseDto registerBoardAccuse(Long userSeq, Long boardSeq, String content) {
-		findBoardAccuse(boardSeq, userSeq);
+	public BoardAccuseDto registerBoardAccuse(String username, Long boardSeq, String content) {
+		Users user = userRepository.findByUsername(username).orElseThrow(() -> new DevGramException(UserErrorCode.USER_NOT_EXIST));
+
+		findBoardAccuse(boardSeq, user.getUserSeq());
 
 		Board board = boardService.getBoard(boardSeq);
-
-		Users user = userRepository.findById(userSeq).orElseThrow(() -> new UsernameNotFoundException(""));
 
 		return BoardAccuseDto.from(boardAccuseRepository.save(BoardAccuseDto.toEntity(board, user, content)));
 	}

@@ -41,4 +41,7 @@ public class BoardProduct {
 	@ManyToOne
 	@JoinColumn(name = "product_seq")
 	private Product product;
+
+	private String createdBy;
+	private String updatedBy;
 }

@@ -25,7 +25,7 @@ public class BoardProductService {
 
 	private final CategoryRepository categoryRepository;
 
-	public List<BoardProductDto> registerBoardProduct(Board board, List<Long> productSeqList) {
+	public List<BoardProductDto> registerBoardProduct(Board board, List<Long> productSeqList, String username) {
 		List<BoardProductDto> boardProductDtoList = new ArrayList<>();
 		for (Long productSeq : productSeqList) {
 			Product product = productRepository.findById(productSeq)
@@ -35,7 +35,7 @@ public class BoardProductService {
 				CategoryErrorCode.CANNOT_FIND_CATEGORY_BY_CATEGORY_SEQ));
 
 			BoardProduct boardProduct = boardProductRepository.save(BoardProduct.builder().product(product)
-				.board(board).build());
+				.board(board).createdBy(username).updatedBy(username).build());
 
 			boardProductDtoList.add(BoardProductDto.from(boardProduct, category, product));
 		}

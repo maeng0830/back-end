@@ -42,4 +42,8 @@ public class BoardTag extends BaseTimeEntity {
 	@ManyToOne
 	@JoinColumn(name = "tag_seq")
 	private Tag tag;
+
+	private String createdBy;
+	private String updatedBy;
+
 }

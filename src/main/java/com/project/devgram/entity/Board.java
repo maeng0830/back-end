@@ -55,9 +55,13 @@ public class Board extends BaseTimeEntity {
 	@Column(length = 300, name = "image_url")
 	private String imageUrl;
 
+
+	private String createdBy;
+	private String updatedBy;
+
 	@Builder
 	public Board(String title, String content, String precautions, String selfIntroduce, String recommendReason, String bestProduct,
-		String otherProduct , String imageUrl) {
+		String otherProduct , String imageUrl , String createdBy , String updatedBy) {
 		this.title = title;
 		this.precautions = precautions;
 		this.selfIntroduce = selfIntroduce;
@@ -68,6 +72,8 @@ public class Board extends BaseTimeEntity {
 		this.status = Status.NORMAL;
 		this.imageUrl =imageUrl;
 		this.likeCount = 0;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
 	}
 
 	public void deleteBoard() {

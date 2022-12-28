@@ -1,19 +1,22 @@
 package com.project.devgram.service;
 
-import com.project.devgram.dto.RegisterBoard;
+import com.project.devgram.dto.RegisterBoard.Request;
 import com.project.devgram.dto.SearchBoard.Response;
 import com.project.devgram.dto.UpdateBoard;
 import com.project.devgram.dto.DetailResponse;
 import com.project.devgram.entity.Board;
 import com.project.devgram.dto.BoardDto;
 import com.project.devgram.entity.Follow;
+import com.project.devgram.entity.Users;
 import com.project.devgram.exception.DevGramException;
 import com.project.devgram.exception.errorcode.BoardErrorCode;
+import com.project.devgram.exception.errorcode.UserErrorCode;
 import com.project.devgram.repository.BoardProductRepository;
 import com.project.devgram.repository.BoardRepository;
 import com.project.devgram.repository.BoardTagRepository;
 import com.project.devgram.repository.CommentRepository;
 import com.project.devgram.repository.FollowRepository;
+import com.project.devgram.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +33,10 @@ public class BoardService {
 	private final CommentRepository commentRepository;
 	private final BoardTagRepository boardTagRepository;
 	private final BoardProductRepository boardProductRepository;
-
+	private final UserRepository userRepository;
 	private final FollowRepository followRepository;
 
-	public Board registerBoard(RegisterBoard.Request request) {
+	public Board registerBoard(Request request, String username) {
 		return boardRepository.save(Board
 			.builder()
 			.content(request.getContent())
@@ -43,12 +46,14 @@ public class BoardService {
 			.recommendReason(request.getRecommendReason())
 			.selfIntroduce(request.getSelfIntroduce())
 			.precautions(request.getPrecautions())
+			.createdBy(username)
+			.updatedBy(username)
 			.build());
 	}
 
 	@Transactional(readOnly = true)
 	public Page<Response> searchBoards(Pageable pageable, String sort, List<Long> tagSeqList) {
-		Page<Response> responsePage = boardRepository.findBy(pageable, sort , tagSeqList);
+		Page<Response> responsePage = boardRepository.findBy(pageable, sort, tagSeqList);
 		for (Response res : responsePage.getContent()) {
 			res.setCommentsCount(commentRepository.countByBoard_BoardSeq(res.getId()));
 			res.setTags(boardTagRepository.getTagNameByBoardSeq(res.getId()));
@@ -58,13 +63,13 @@ public class BoardService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<Response> searchFollowingBoards(Pageable pageable, List<Long> tagSeqList) {
-		//TODO: 로그인 완료시 해당 부분 변경
-		long userSeq = 1L;
-		List<Follow> followList = followRepository.findByFollower_UserSeqOrderByFollower(userSeq);
+	public Page<Response> searchFollowingBoards(String username, Pageable pageable, List<Long> tagSeqList) {
+		Users user = userRepository.findByUsername(username).orElseThrow(() -> new DevGramException(UserErrorCode.USER_NOT_EXIST));
+
+		List<Follow> followList = followRepository.findByFollower_UserSeqOrderByFollower(user.getUserSeq());
 		List<Long> followerList = followList.stream().map(Follow -> Follow.getFollowing().getUserSeq()).collect(Collectors.toList());
 
-		Page<Response> responsePage = boardRepository.findByFollowerUserSeq(pageable, followerList , tagSeqList);
+		Page<Response> responsePage = boardRepository.findByFollowerUserSeq(pageable, followerList, tagSeqList);
 		for (Response res : responsePage.getContent()) {
 			res.setCommentsCount(commentRepository.countByBoard_BoardSeq(res.getId()));
 			res.setTags(boardTagRepository.getTagNameByBoardSeq(res.getId()));

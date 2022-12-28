@@ -7,11 +7,11 @@ import com.project.devgram.entity.BoardLike;
 import com.project.devgram.entity.Users;
 import com.project.devgram.exception.DevGramException;
 import com.project.devgram.exception.errorcode.BoardLikeErrorCode;
+import com.project.devgram.exception.errorcode.UserErrorCode;
 import com.project.devgram.repository.BoardLikeRepository;
 import com.project.devgram.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,18 +28,18 @@ public class BoardLikeService {
 	}
 
 	@Transactional
-	public BoardLikeDto registerBoardLike(Long boardSeq, Long userSeq) {
-		boardLikeRepository.findByBoard_BoardSeqAndUser_UserSeq(boardSeq, userSeq).ifPresent(boardLike -> {
+	public BoardLikeDto registerBoardLike(Long boardSeq, String username) {
+		Users user = userRepository.findByUsername(username).orElseThrow(() -> new DevGramException(UserErrorCode.USER_NOT_EXIST));
+
+		boardLikeRepository.findByBoard_BoardSeqAndUser_UserSeq(boardSeq, user.getUserSeq()).ifPresent(boardLike -> {
 			throw new DevGramException(BoardLikeErrorCode.ALREADY_LIKED_BOARD);
 		});
 
 		Board board = boardService.getBoard(boardSeq);
 
-		Users user = userRepository.findById(userSeq).orElseThrow(() -> new UsernameNotFoundException("asdasdd"));
-
 		board.increaseLikeCount();
 
-		return BoardLikeDto.from(boardLikeRepository.save(BoardLikeDto.toEntity(board, user)));
+		return BoardLikeDto.from(boardLikeRepository.save(BoardLikeDto.toEntity(board, user, username)));
 
 	}
 
