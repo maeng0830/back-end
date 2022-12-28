@@ -31,7 +31,7 @@ public class BoardProductService {
 			Product product = productRepository.findById(productSeq)
 				.orElseThrow(() -> new DevGramException(ProductErrorCode.CANNOT_FIND_PRODUCT_BY_PRODUCT_SEQ));
 
-			Category category = categoryRepository.findById(product.getCategory_Seq()).orElseThrow(() -> new DevGramException(
+			Category category = categoryRepository.findById(product.getCategory().getCategory_Seq()).orElseThrow(() -> new DevGramException(
 				CategoryErrorCode.CANNOT_FIND_CATEGORY_BY_CATEGORY_SEQ));
 
 			BoardProduct boardProduct = boardProductRepository.save(BoardProduct.builder().product(product)
