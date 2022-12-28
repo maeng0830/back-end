@@ -48,6 +48,10 @@ public class Product implements ProductCode {
 	@JsonManagedReference
 	private List<Review> reviewList = new ArrayList<>();
 
+	@OneToMany(mappedBy = "product")
+	@JsonManagedReference
+	private List<ProductLike> productLikes = new ArrayList<>();
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_Seq")
 	@JsonBackReference

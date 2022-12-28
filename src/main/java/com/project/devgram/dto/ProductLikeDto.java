@@ -3,6 +3,7 @@ package com.project.devgram.dto;
 import com.project.devgram.entity.ProductLike;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ProductLikeDto {
+	@NotNull
 	private String username;
+	@NotNull
 	private Long productSeq;
 	public static List<ProductLikeDto> of(List<ProductLike> productLikes) {
 		if (productLikes != null) {
@@ -29,8 +32,8 @@ public class ProductLikeDto {
 	}
 	public static ProductLikeDto of(ProductLike productLike){
 		return ProductLikeDto.builder()
-			.productSeq(productLike.getProductSeq())
-			.username(productLike.getUsername())
+			.productSeq(productLike.getProduct().getProductSeq())
+			.username(productLike.getUsers().getUsername())
 			.build();
 	}
 }

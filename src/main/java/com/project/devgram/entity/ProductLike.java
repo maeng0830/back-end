@@ -1,16 +1,18 @@
 package com.project.devgram.entity;
 
-import javax.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 
 
@@ -27,11 +29,14 @@ public class ProductLike {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long productLikeSeq;
 
-	@Column(name = "product_seq")
-	@NonNull
-	private Long productSeq;
 
-	@Column(name = "user_name")
-	@NonNull
-	private String username;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_seq")
+	@JsonBackReference
+	private Product product;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "username")
+	@JsonBackReference
+	private Users users;
 }
