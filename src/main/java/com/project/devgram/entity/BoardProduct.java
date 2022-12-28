@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,17 +27,18 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class BoardProduct {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_product_seq", nullable = false)
-	private Long boardLikeSeq;
+	private Long boardProductSeq;
 
 	@ManyToOne
 	@JoinColumn(name = "board_seq")
 	private Board board;
 
-	//TODO: merge 하여 , product 테이블 생기면 product fk 걸기
-	@Column(name = "product_seq")
-	private Long productSeq;
+	@ManyToOne
+	@JoinColumn(name = "product_seq")
+	private Product product;
 }

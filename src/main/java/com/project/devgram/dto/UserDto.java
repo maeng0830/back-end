@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +17,15 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class UserDto {
-
+    @NotNull(message = "아이디는 null일수 없습니다.")
+    private String id;
     private Long userSeq;
     private String email;
     private String password;
     private String username;
-
     private ROLE role;
+
+    private MultipartFile imageFile;
 
     private String providerId;
     private String annual;
@@ -69,11 +73,5 @@ public class UserDto {
 
     }
 
-
-    public void toDto(String id) {
-        this.providerId = "github";
-        this.username = providerId + id;
-
-    }
 
 }

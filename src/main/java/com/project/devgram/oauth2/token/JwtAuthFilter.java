@@ -2,13 +2,13 @@ package com.project.devgram.oauth2.token;
 
 
 import com.project.devgram.oauth2.principal.PrincipalDetailsService;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -55,8 +55,9 @@ public class JwtAuthFilter extends GenericFilterBean {
     private boolean isLoginUrlCheck(String accessToken,String requestURI){
         String tokenCheck = tokenService.getTokenCheck(accessToken);
         boolean blackList = tokenService.getListCheck(accessToken);
+        String grant = tokenService.getTokenGrant(accessToken);
 
-
+        log.info("what's your grant: {}", grant);
         // 로그인 여부 판단
         if(blackList){
             throw new JwtException("토큰을 확인하세요");

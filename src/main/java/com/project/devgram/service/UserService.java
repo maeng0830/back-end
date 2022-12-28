@@ -1,15 +1,19 @@
 package com.project.devgram.service;
 
 import com.project.devgram.dto.UserDto;
-
 import com.project.devgram.entity.Users;
 import com.project.devgram.exception.DevGramException;
 import com.project.devgram.exception.errorcode.UserErrorCode;
 import com.project.devgram.repository.UserRepository;
+import com.project.devgram.type.ROLE;
 import com.project.devgram.util.passUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ImageUploader uploader;
 
 
     public UserDto getUserDetails(String username){
@@ -40,20 +45,50 @@ public class UserService {
         }
 
 
-    public void updateUserDetails(UserDto dto) {
+    public void updateUserDetails(UserDto dto) throws IOException {
         log.info("dtos {}",dto);
+        String IMAGE_DIR = "DevUser";
 
         Users user =userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(()-> new DevGramException(UserErrorCode.USER_NOT_EXIST));
 
         String encPassword = passUtil.encPassword(dto.getPassword());
+        String imageUrl = uploader.upload(dto.getImageFile(), IMAGE_DIR);
 
             user.setPassword(encPassword);
             user.setJob(dto.getJob());
             user.setAnnual(dto.getAnnual());
             user.setUserSeq(dto.getUserSeq());
+            user.setImageUrl(imageUrl);
+
+
 
             userRepository.save(user);
+    }
+
+    public String saveUserDetails(UserDto dto) {
+
+        UUID str = UUID.randomUUID();
+        String sumStr = String.valueOf(str);
+        String extraWord = sumStr.substring(0,6);
+        String username ="github"+dto.getId();
+
+        log.info("username {} ",username);
+        Optional<Users> userEntity = userRepository.findByUsername(username);
+
+        if(userEntity.isPresent()) {
+            throw new DevGramException(UserErrorCode.USER_ALREADY_EXIST,"해당유저는 이미 회원가입을 했습니다.");
+        }
+        Users users = Users.builder()
+                .username(username)
+                .password(extraWord)
+                .providerId(dto.getId())
+                .email(dto.getEmail())
+                .role(ROLE.ROLE_USER)
+                .build();
+
+        userRepository.save(users);
+        return username;
     }
 
 }
