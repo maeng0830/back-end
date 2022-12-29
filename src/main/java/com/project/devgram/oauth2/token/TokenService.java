@@ -27,7 +27,7 @@ public class TokenService {
 
     private final RedisService redisService;
 
-    private final long accessTokenValidTime = Duration.ofMinutes(30).toMillis();
+    private final long accessTokenValidTime = Duration.ofHours(3).toMillis();
     private final long refreshTokenValidTime = Duration.ofDays(1).toSeconds();
 
     @PostConstruct // 빈등록 후 초기화를 시켜주는 어노테이션
