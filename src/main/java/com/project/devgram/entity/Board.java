@@ -61,7 +61,7 @@ public class Board extends BaseTimeEntity {
 
 	@Builder
 	public Board(String title, String content, String precautions, String selfIntroduce, String recommendReason, String bestProduct,
-		String otherProduct , String imageUrl , String createdBy , String updatedBy) {
+		String otherProduct, String imageUrl, String createdBy, String updatedBy) {
 		this.title = title;
 		this.precautions = precautions;
 		this.selfIntroduce = selfIntroduce;
@@ -70,7 +70,7 @@ public class Board extends BaseTimeEntity {
 		this.otherProduct = otherProduct;
 		this.content = content;
 		this.status = Status.NORMAL;
-		this.imageUrl =imageUrl;
+		this.imageUrl = imageUrl;
 		this.likeCount = 0;
 		this.createdBy = createdBy;
 		this.updatedBy = updatedBy;
@@ -84,6 +84,41 @@ public class Board extends BaseTimeEntity {
 		checkIsDeleted();
 		if (StringUtils.hasText(title)) {
 			this.title = title;
+		}
+	}
+
+	public void updatePrecautions(String precautions) {
+		checkIsDeleted();
+		if (StringUtils.hasText(precautions)) {
+			this.precautions = precautions;
+		}
+	}
+
+	public void updateSelfIntroduce(String selfIntroduce) {
+		checkIsDeleted();
+		if (StringUtils.hasText(selfIntroduce)) {
+			this.selfIntroduce = selfIntroduce;
+		}
+	}
+
+	public void updateRecommendReason(String recommendReason){
+		checkIsDeleted();
+		if(StringUtils.hasText(recommendReason)){
+			this.recommendReason =recommendReason;
+		}
+	}
+
+	public void updateBestProduct(String bestProduct){
+		checkIsDeleted();
+		if(StringUtils.hasText(bestProduct)){
+			this.bestProduct = bestProduct;
+		}
+	}
+
+	public void updateOtherProduct(String otherProduct){
+		checkIsDeleted();
+		if(StringUtils.hasText(otherProduct)){
+			this.otherProduct = otherProduct;
 		}
 	}
 

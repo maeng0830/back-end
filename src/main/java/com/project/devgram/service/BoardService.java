@@ -84,6 +84,11 @@ public class BoardService {
 		Board board = getBoard(request.getBoardSeq());
 
 		board.updateTitle(request.getTitle());
+		board.updatePrecautions(request.getPrecautions());
+		board.updateSelfIntroduce(request.getSelfIntroduce());
+		board.updateRecommendReason(request.getRecommendReason());
+		board.updateBestProduct(request.getBestProduct());
+		board.updateOtherProduct(request.getOtherProduct());
 		board.updateContent(request.getContent());
 
 		return BoardDto.fromEntity(board);

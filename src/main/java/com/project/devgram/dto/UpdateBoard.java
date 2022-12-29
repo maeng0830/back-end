@@ -12,6 +12,11 @@ public class UpdateBoard {
 	public static class Request {
 		private Long boardSeq;
 		private String title;
+		private String precautions;
+		private String selfIntroduce;
+		private String recommendReason;
+		private String bestProduct;
+		private String otherProduct;
 		private String content;
 	}
 	@NoArgsConstructor
